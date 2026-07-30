@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Halo | Pele é dado. Cuidado é método.</title>
+<meta name="description" content="Clínica de estética que mede antes de tocar. Avaliação com leitura de pele, protocolo individual e evolução registrada sessão a sessão.">
+<meta property="og:title" content="Halo | Pele é dado. Cuidado é método.">
+<meta property="og:description" content="Avaliação medida, protocolo individual, evolução registrada. Sem promessa de milagre.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23101413'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='%23bfe3d0' stroke-width='2'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700&family=Fragment+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #101413; --panel: #171c1a; --panel2: #1d2320;
+    --ink: #e9eeeb; --muted: #aeb9b3; --faint: #93a09a;
+    --mint: #bfe3d0; --mint-dim: rgba(191,227,208,.14);
+    --line: rgba(233,238,235,.14); --line-soft: rgba(233,238,235,.08);
+    --navbg: rgba(16,20,19,.82); --r: 6px;
+    --ease: cubic-bezier(.16,1,.3,1);
+  }
+  html, body { margin: 0; padding: 0; background: var(--page); color: var(--ink); font-family: 'Schibsted Grotesk', sans-serif; font-weight: 400; scrollbar-color: #3a453f var(--page); }
+  a { color: var(--mint); text-decoration: none; }
+  ::selection { background: var(--mint-dim); }
+  :focus-visible { outline: 2px solid var(--mint); outline-offset: 3px; border-radius: 2px; }
+  .mono { font-family: 'Fragment Mono', monospace; }
+
+  #pbar { position: fixed; top: 0; left: 0; height: 2px; width: 0%; background: var(--mint); z-index: 90; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 80; display: flex; align-items: center; justify-content: space-between; padding: 14px 32px; background: var(--navbg); backdrop-filter: blur(14px); border-bottom: 1px solid var(--line-soft); }
+  .logo { font-weight: 700; font-size: 20px; letter-spacing: .02em; display: inline-flex; align-items: center; gap: 9px; color: var(--ink); }
+  .logo::before { content: ""; width: 13px; height: 13px; border: 2px solid var(--mint); border-radius: 50%; }
+  .btn { display: inline-block; background: var(--mint); color: #101413; font-weight: 500; font-size: 14px; letter-spacing: .01em; padding: 11px 24px; border-radius: var(--r); transition: transform .35s var(--ease), background .35s var(--ease); }
+  .btn:hover { background: #d4efe0; transform: translateY(-1px); }
+  .btn:active { transform: translateY(1px) scale(.98); }
+  .link-quiet { color: var(--muted); font-size: 14px; border-bottom: 1px solid var(--line); padding-bottom: 2px; transition: color .3s var(--ease), border-color .3s var(--ease); }
+  .link-quiet:hover { color: var(--ink); border-color: var(--mint); }
+
+  .fx { opacity: 0; transform: translateY(24px); }
+  .fx.on { opacity: 1; transform: none; transition: opacity 1s var(--ease) var(--fxd, 0ms), transform 1s var(--ease) var(--fxd, 0ms); }
+
+  /* ===== Hero ===== */
+  header { position: relative; min-height: 100svh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  #herocontent { position: relative; z-index: 2; text-align: center; max-width: 880px; padding: 92px 24px 40px; }
+  header h1 { font-weight: 700; font-size: clamp(34px, 4.8vw, 62px); line-height: 1.03; letter-spacing: -0.025em; margin: 0 0 18px; text-wrap: balance; }
+  .hero-sub { font-size: clamp(15px, 1.6vw, 18px); line-height: 1.6; color: var(--muted); max-width: 540px; margin: 0 auto 28px; }
+  .hero-ctas { display: flex; gap: 22px; justify-content: center; flex-wrap: wrap; align-items: center; margin-bottom: 40px; }
+
+  .scan { max-width: 880px; margin: 0 auto; text-align: left; }
+  .scan-img { display: block; width: 100%; aspect-ratio: 21 / 5.5; object-fit: cover; border-radius: var(--r); border: 1px solid var(--line-soft); }
+  .scan-row { display: flex; justify-content: space-between; gap: 12px; padding-top: 12px; border-top: 1px solid var(--line); margin-top: 14px; }
+  .scan-cell { font-size: 12px; line-height: 1.5; color: var(--faint); }
+  .scan-cell b { display: block; color: var(--mint); font-weight: 400; font-size: 13px; }
+  .scan-note { font-size: 11px; color: var(--faint); margin-top: 10px; }
+
+  /* ===== Corredor: o método ===== */
+  #scrubwrap { position: relative; height: 640vh; }
+  #scrubwrap.disabled { height: 0; }
+  .scrub-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; background: var(--page); }
+  #scrubvid { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: grayscale(.82) brightness(.6) contrast(1.07); }
+  .scrub-tint { position: absolute; inset: 0; background: #223328; mix-blend-mode: color; pointer-events: none; }
+  .scrub-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(16,20,19,.62) 0%, rgba(16,20,19,.18) 32%, rgba(16,20,19,.18) 58%, rgba(16,20,19,.82) 100%); pointer-events: none; }
+
+  #counter { position: absolute; top: 84px; right: 32px; z-index: 4; font-size: 12px; color: var(--faint); letter-spacing: .08em; opacity: 0; transition: opacity .5s var(--ease); }
+  #counter.show { opacity: 1; }
+  #counter b { color: var(--mint); font-weight: 400; }
+
+  .cap { opacity: 0; transform: translate(-50%, 18px); transition: opacity .6s var(--ease), transform .6s var(--ease); position: absolute; left: 50%; bottom: 10%; max-width: 620px; width: 92%; z-index: 3; text-align: center; }
+  .cap.show { opacity: 1; transform: translate(-50%, 0); }
+  .cap-tag { font-family: 'Fragment Mono', monospace; font-size: 12px; color: var(--mint); margin-bottom: 12px; }
+  .cap h2 { font-weight: 700; font-size: clamp(28px, 4vw, 50px); line-height: 1.06; letter-spacing: -0.02em; margin: 0 0 10px; color: #f2f6f3; text-shadow: 0 2px 22px rgba(16,20,19,.65); text-wrap: balance; }
+  .cap p { font-size: 15px; line-height: 1.6; color: #ccd6d0; margin: 0 auto; max-width: 460px; text-shadow: 0 1px 14px rgba(16,20,19,.7); }
+
+  /* ===== Protocolo (tratamentos) ===== */
+  .treat { position: relative; padding: 130px 0 110px; }
+  .treat-head { max-width: 700px; margin: 0 auto 54px; padding: 0 24px; text-align: center; }
+  .treat-eyebrow { font-family: 'Fragment Mono', monospace; font-size: 12px; color: var(--mint); }
+  .treat-head h2 { font-weight: 700; font-size: clamp(32px, 4.4vw, 56px); line-height: 1.05; letter-spacing: -0.02em; margin: 14px 0 16px; text-wrap: balance; }
+  .treat-head p { font-size: 16px; line-height: 1.65; color: var(--muted); margin: 0; }
+  .rail { display: flex; gap: 18px; overflow-x: auto; padding: 8px max(24px, calc((100vw - 1160px) / 2)) 26px; scroll-snap-type: x mandatory; scrollbar-width: thin; scrollbar-color: #3a453f transparent; }
+  .tcard { scroll-snap-align: start; flex: 0 0 320px; background: var(--panel); border: 1px solid var(--line-soft); border-radius: var(--r); overflow: hidden; display: flex; flex-direction: column; transition: border-color .35s var(--ease), transform .35s var(--ease); }
+  .tcard:hover { border-color: rgba(191,227,208,.38); transform: translateY(-4px); }
+  .tcard img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-bottom: 1px solid var(--line-soft); }
+  .tcard img.crop-strip { object-position: 78% 50%; }
+  .tcard .tbody { padding: 22px 22px 20px; display: flex; flex-direction: column; gap: 9px; flex: 1; }
+  .tcard h3 { font-weight: 500; font-size: 20px; letter-spacing: -0.01em; margin: 0; }
+  .tcard p { font-size: 14px; line-height: 1.6; color: var(--muted); margin: 0; flex: 1; }
+  .tcard .tmeta { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--line-soft); padding-top: 13px; font-family: 'Fragment Mono', monospace; font-size: 12px; color: var(--faint); }
+  .tcard .tprice { color: var(--mint); }
+
+  /* ===== CTA ===== */
+  .cta { position: relative; text-align: center; padding: 130px 24px 120px; background: var(--panel); border-top: 1px solid var(--line-soft); }
+  .cta h2 { font-weight: 700; font-size: clamp(34px, 5vw, 66px); line-height: 1.04; letter-spacing: -0.022em; margin: 0 auto 18px; max-width: 760px; text-wrap: balance; }
+  .cta p { font-size: 17px; color: var(--muted); margin: 0 0 36px; }
+  .cta .btn { font-size: 16px; padding: 15px 34px; }
+
+  footer { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; max-width: 1160px; margin: 0 auto; padding: 28px 24px 40px; font-size: 13px; color: var(--faint); }
+  footer .flogo { font-weight: 700; font-size: 16px; color: var(--ink); display: inline-flex; align-items: center; gap: 8px; }
+  footer .flogo::before { content: ""; width: 11px; height: 11px; border: 2px solid var(--mint); border-radius: 50%; }
+
+  @media (max-width: 640px) {
+    nav { padding: 12px 18px; }
+    #counter { top: 70px; right: 18px; }
+    .scan-row { flex-wrap: wrap; }
+    .scan-cell { flex: 1 1 40%; }
+    .cap { bottom: 8%; }
+    .treat { padding: 96px 0 76px; }
+    .cta { padding: 96px 20px 88px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fx { opacity: 1; transform: none; }
+    .btn, .tcard { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="pbar" role="progressbar" aria-label="Progresso da página" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+
+<nav>
+  <span class="logo">Halo</span>
+  <a class="btn" href="#">Agendar avaliação</a>
+</nav>
+
+<header>
+  <div id="herocontent">
+    <h1 class="fx">Pele é dado.<br>Cuidado é método.</h1>
+    <p class="hero-sub fx" style="--fxd: 120ms;">Avaliação medida, protocolo individual, evolução registrada sessão a sessão. Sem promessa de milagre.</p>
+    <div class="hero-ctas fx" style="--fxd: 240ms;">
+      <a class="btn" href="#">Agendar avaliação</a>
+      <a class="link-quiet" href="#tratamentos">Ver o protocolo</a>
+    </div>
+    <div class="scan fx" style="--fxd: 380ms;">
+      <img class="scan-img" src="media/macro-hero.jpg" alt="Macro de pele com microgotas de condensação sob luz fria de laboratório" loading="eager">
+      <div class="scan-row" aria-label="Leituras de amostra de uma avaliação">
+        <span class="scan-cell mono"><b>hidratação 47,2%</b>leitura basal</span>
+        <span class="scan-cell mono"><b>elasticidade 38,5%</b>retorno em 8 semanas</span>
+        <span class="scan-cell mono"><b>barreira +89,1%</b>índice de recuperação</span>
+      </div>
+      <p class="scan-note mono">leituras de amostra, para ilustrar o formato do laudo</p>
+    </div>
+  </div>
+</header>
+
+<section id="scrubwrap" aria-label="O método Halo em seis etapas">
+  <div class="scrub-sticky">
+    <video id="scrubvid" src="media/corredor-scrub.mp4" muted playsinline preload="auto"></video>
+    <div class="scrub-tint"></div>
+    <div class="scrub-shade"></div>
+
+    <div id="counter" class="mono" aria-hidden="true"><b id="cnum">01</b> / 06</div>
+
+    <div class="cap" id="cap0">
+      <div class="cap-tag">recepção</div>
+      <h2>Deixe o dia do lado de fora.</h2>
+      <p>A porta fecha e o ruído fica. A leitura da sua pele começa antes do toque.</p>
+    </div>
+    <div class="cap" id="cap1">
+      <div class="cap-tag">vapor</div>
+      <h2>O vapor abre caminhos.</h2>
+      <p>Minutos de calor úmido. Poros dilatados, músculos menos armados, leitura mais limpa.</p>
+    </div>
+    <div class="cap" id="cap2">
+      <div class="cap-tag">avaliação</div>
+      <h2>Medir antes de tocar.</h2>
+      <p>Hidratação, oleosidade e sensibilidade viram números. O protocolo nasce deles.</p>
+    </div>
+    <div class="cap" id="cap3">
+      <div class="cap-tag">protocolo</div>
+      <h2>Ciência na dose da sua pele.</h2>
+      <p>Ativos escolhidos pela leitura do dia, não pelo seu tipo de pele.</p>
+    </div>
+    <div class="cap" id="cap4">
+      <div class="cap-tag">registro</div>
+      <h2>O espelho começa a concordar.</h2>
+      <p>Cada sessão entra no histórico. A curva importa mais que a foto isolada.</p>
+    </div>
+    <div class="cap" id="cap5">
+      <div class="cap-tag">halo</div>
+      <h2>No fim do corredor, você.</h2>
+      <p>Mais nítida, mais leve. O contorno de luz que dá nome à casa.</p>
+    </div>
+  </div>
+</section>
+
+<section class="treat" id="tratamentos">
+  <div class="treat-head">
+    <div class="treat-eyebrow fx">protocolo</div>
+    <h2 class="fx" style="--fxd: 100ms;">Seis salas, um método.</h2>
+    <p class="fx" style="--fxd: 200ms;">Deslize para conhecer. Toda entrada começa pela avaliação medida.</p>
+  </div>
+  <div class="fx" style="--fxd: 250ms;">
+    <div class="rail">
+      <div class="tcard">
+        <img src="media/macro-hidratacao.jpg" alt="Macro de gotas de água sobre a pele" loading="lazy">
+        <div class="tbody"><h3>Limpeza profunda</h3><p>Vapor, extração e máscara calmante. A base de qualquer rotina que funciona.</p><div class="tmeta"><span>60 min</span><span class="tprice">R$ 180</span></div></div>
+      </div>
+      <div class="tcard">
+        <img src="media/macro-textura.jpg" alt="Macro da textura da pele em luz rasante" loading="lazy">
+        <div class="tbody"><h3>Peeling de diamante</h3><p>Renovação mecânica suave para textura, manchas leves e viço imediato.</p><div class="tmeta"><span>50 min</span><span class="tprice">R$ 240</span></div></div>
+      </div>
+      <div class="tcard">
+        <div class="tbody"><h3>Massagem relaxante</h3><p>Pressão média guiada pela sua semana, não pelo relógio.</p><div class="tmeta"><span>70 min</span><span class="tprice">R$ 210</span></div></div>
+      </div>
+      <div class="tcard">
+        <div class="tbody"><h3>Drenagem linfática</h3><p>Método manual para inchaço e circulação, com toque firme e ritmo constante.</p><div class="tmeta"><span>60 min</span><span class="tprice">R$ 190</span></div></div>
+      </div>
+      <div class="tcard">
+        <img src="media/macro-hero.jpg" class="crop-strip" alt="Macro de pele iluminada, recorte da leitura de avaliação" loading="lazy">
+        <div class="tbody"><h3>Skin glow facial</h3><p>Protocolo de luminosidade: ácidos leves, hidratação profunda e massagem facial.</p><div class="tmeta"><span>75 min</span><span class="tprice">R$ 290</span></div></div>
+      </div>
+      <div class="tcard">
+        <div class="tbody"><h3>Plano Halo</h3><p>Assinatura mensal com rituais combinados e evolução da pele acompanhada no laudo.</p><div class="tmeta"><span>mensal</span><span class="tprice">R$ 420/mês</span></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <h2 class="fx">Sua pele não precisa de milagre. Precisa de método.</h2>
+  <p class="fx" style="--fxd: 150ms;">Agende a avaliação. Saia com um plano e com os seus números.</p>
+  <a class="btn fx" style="--fxd: 280ms;" href="#">Agendar avaliação</a>
+</section>
+
+<footer>
+  <span class="flogo">Halo</span>
+  <span>© 2026 Halo Estética · São Paulo</span>
+  <a href="#">@halo.estetica</a>
+</footer>
+
+<noscript>
+  <style>
+    #scrubwrap { height: auto; }
+    .scrub-sticky { position: static; height: auto; background: var(--page); }
+    #scrubvid, .scrub-tint, .scrub-shade { display: none; }
+    .cap { position: static; opacity: 1; transform: none; margin: 48px auto; }
+    .fx { opacity: 1; transform: none; }
+  </style>
+</noscript>
+
+<script>
+(function () {
+  var vh = window.innerHeight;
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var wrap = document.getElementById('scrubwrap');
+  var vid = document.getElementById('scrubvid');
+  vid.muted = true;
+  try { vid.pause(); } catch (e) {}
+  function disableScrub() { wrap.classList.add('disabled'); }
+  vid.addEventListener('error', disableScrub);
+  if (vid.error) disableScrub();
+
+  var seekBusy = false, smoothT = 0, targetT = 0, scrubRaf = null;
+  vid.addEventListener('seeked', function () { seekBusy = false; });
+  function scrubStep() {
+    var cur = smoothT || vid.currentTime || 0;
+    var next = cur + (targetT - cur) * 0.22;
+    smoothT = next;
+    var diff = Math.abs(next - (vid.currentTime || 0));
+    if (!seekBusy && diff > 0.034 && vid.readyState > 0) {
+      seekBusy = true;
+      try { vid.currentTime = next; } catch (e) { seekBusy = false; }
+    }
+    if (Math.abs(targetT - next) < 0.01 && diff < 0.034) { scrubRaf = null; return; }
+    scrubRaf = requestAnimationFrame(scrubStep);
+  }
+  function startScrub() { if (!scrubRaf) scrubRaf = requestAnimationFrame(scrubStep); }
+
+  var N = 6;
+  var pbar = document.getElementById('pbar');
+  var hero = document.getElementById('herocontent');
+  var counter = document.getElementById('counter');
+  var cnum = document.getElementById('cnum');
+  var fxEls = document.querySelectorAll('.fx');
+
+  function update() {
+    var y = window.scrollY;
+    var doc = document.documentElement;
+    var max = doc.scrollHeight - vh;
+    var pct = max > 0 ? (y / max) * 100 : 0;
+    pbar.style.width = pct + '%';
+    pbar.setAttribute('aria-valuenow', String(Math.round(pct)));
+
+    hero.style.transform = 'translateY(' + (y * 0.16) + 'px)';
+    hero.style.opacity = String(Math.max(0, 1 - y / (vh * 0.9)));
+
+    fxEls.forEach(function (el) {
+      if (el.classList.contains('on')) return;
+      var r = el.getBoundingClientRect();
+      if (r.top < vh * 0.88 && r.bottom > -vh * 0.2) el.classList.add('on');
+    });
+
+    if (!wrap.classList.contains('disabled')) {
+      var r = wrap.getBoundingClientRect();
+      var total = r.height - vh;
+      var p = Math.min(1, Math.max(0, total > 0 ? -r.top / total : 0));
+      if (!reducedMotion && vid.duration) {
+        targetT = p * Math.max(0, vid.duration - 0.1);
+        startScrub();
+      }
+      var active = r.top <= 0 && p < 1.001;
+      var cur = Math.min(N - 1, Math.floor(p * N));
+      counter.classList.toggle('show', active);
+      if (active) cnum.textContent = (cur + 1 < 10 ? '0' : '') + (cur + 1);
+      for (var i = 0; i < N; i++) {
+        var c = document.getElementById('cap' + i);
+        c.classList.toggle('show', i === cur && active);
+      }
+    }
+  }
+
+  var rafPending = false;
+  function onScroll() {
+    if (!rafPending) { rafPending = true; requestAnimationFrame(function () { rafPending = false; update(); }); }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () { vh = window.innerHeight; onScroll(); });
+  update();
+  setTimeout(update, 300);
+  setTimeout(update, 1200);
+})();
+</script>
+</body>
+</html>

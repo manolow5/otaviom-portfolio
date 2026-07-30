@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="folha">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bamboo | Atrás de cada folha, um cuidado</title>
+<meta name="description" content="Cosméticos de cabelo e bem-estar. Empurre as folhas e entre: atrás de cada uma, um ritual esperando por você.">
+<meta property="og:title" content="Bamboo | o corredor de folhas">
+<meta property="og:description" content="Uma floresta de folhas gigantes escondendo cosméticos de cabelo e bem-estar. Role a página e entre na loja.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230a0f0a'/%3E%3Cpath d='M16 5 C10 12 8 19 16 27 C24 19 22 12 16 5 Z' fill='%238fb56d'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Petrona:ital,wght@0,400;0,500;1,400&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== Tema Bamboo (verde-noite + dourado-bambu) ===== */
+  :root, [data-theme="folha"] {
+    --page: #0a0f0a; --panel: #101710; --panel2: rgba(255,255,255,.06);
+    --ink: #eef2e4; --muted: #adb8a0; --faint: #8a977e;
+    --accent: #cdb069; --accent-ink: #14170e; --accent-border: rgba(205,176,105,.35);
+    --leaf: #8fb56d; --leaf-soft: rgba(143,181,109,.16);
+    --border: rgba(255,255,255,.08); --navbg: rgba(10,15,10,.72);
+    --card-border: rgba(255,255,255,.14);
+    --hero-grad: radial-gradient(ellipse at 50% 90%, rgba(143,181,109,.16), transparent 55%);
+    --accent-glow: rgba(205,176,105,.3);
+  }
+
+  html, body { margin: 0; padding: 0; background: var(--page); color: var(--ink); font-family: 'Hanken Grotesk', sans-serif; scrollbar-color: #2e3a2a var(--page); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { filter: brightness(1.1); }
+  ::selection { background: var(--accent-border); }
+  :focus-visible { outline: 2px solid var(--leaf); outline-offset: 3px; border-radius: 2px; }
+  button { font-family: 'Hanken Grotesk', sans-serif; }
+  .serif { font-family: 'Petrona', serif; }
+
+  @keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  @keyframes leafsway { 0%, 100% { transform: rotate(-2deg); } 50% { transform: rotate(2deg); } }
+
+  /* ===== Barra de progresso ===== */
+  #pbar { position: fixed; top: 0; left: 0; height: 2px; width: 0%; background: var(--accent); z-index: 90; }
+
+  /* ===== Nav ===== */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 80; display: flex; align-items: center; justify-content: space-between; padding: 14px 28px; background: var(--navbg); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+  .logo { font-family: 'Petrona', serif; font-size: 24px; letter-spacing: .01em; color: var(--ink); display: inline-flex; align-items: center; gap: 9px; }
+  .logo svg { width: 15px; height: 19px; }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .btn { display: inline-block; background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 999px; transition: filter .2s ease; }
+  .btn:hover { filter: brightness(1.08); }
+
+  /* ===== Reveal on scroll ===== */
+  .fx { opacity: 0; transform: translateY(24px); }
+  .fx.on { opacity: 1; transform: none; transition: opacity .9s cubic-bezier(.22,.61,.36,1) var(--fxd, 0ms), transform .9s cubic-bezier(.22,.61,.36,1) var(--fxd, 0ms); }
+
+  /* ===== Hero ===== */
+  header { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; }
+  .hero-bg img { width: 100%; height: 100%; object-fit: cover; filter: brightness(.62) saturate(.94); }
+  .hero-bg::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,15,10,.72) 0%, rgba(10,15,10,.38) 45%, rgba(10,15,10,.88) 100%); }
+  .hero-grad { position: absolute; inset: 0; background: var(--hero-grad); }
+  #herocontent { position: relative; z-index: 2; text-align: center; max-width: 940px; padding: 120px 24px 80px; }
+  header h1, .hero-sub { text-shadow: 0 2px 26px rgba(0,0,0,.55); }
+  header h1 { font-family: 'Petrona', serif; font-weight: 400; font-size: clamp(42px, 6.6vw, 84px); line-height: 1.05; margin: 0 0 24px; color: var(--ink); text-wrap: balance; }
+  header h1 em { color: var(--leaf); }
+  .hero-sub { font-size: clamp(17px, 2vw, 21px); line-height: 1.6; color: var(--muted); max-width: 660px; margin: 0 auto 40px; }
+  .hero-ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; align-items: center; }
+
+  /* ===== Corredor de folhas: vídeo com scrub ===== */
+  #scrubwrap { position: relative; height: 640vh; }
+  #scrubwrap.disabled { height: 0; }
+  .scrub-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #0a0f0a; }
+  #scrubvid { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .scrub-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(10,15,10,.45) 0%, transparent 30%, transparent 62%, rgba(10,15,10,.78) 100%); }
+  .cap { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; position: absolute; bottom: 9%; max-width: 480px; z-index: 3; }
+  .cap.left { left: 5%; }
+  .cap.right { right: 5%; text-align: right; }
+  .cap.center { left: 50%; bottom: 10%; transform: translate(-50%, 24px); max-width: 620px; width: 90%; text-align: center; }
+  .cap.show { opacity: 1; transform: translateY(0); }
+  .cap.center.show { transform: translate(-50%, 0); }
+  .cap-tag { font-size: 13px; font-weight: 600; letter-spacing: .04em; color: #cdb069; margin-bottom: 12px; text-shadow: 0 1px 14px rgba(0,0,0,.8); }
+  .cap h2 { font-family: 'Petrona', serif; font-weight: 400; font-size: clamp(30px, 3.8vw, 48px); line-height: 1.1; margin: 0 0 12px; color: #eef2e4; text-shadow: 0 2px 28px rgba(0,0,0,.7); text-wrap: balance; }
+  .cap p { font-size: 16px; line-height: 1.6; color: #c6d0b8; margin: 0; text-shadow: 0 1px 18px rgba(0,0,0,.7); }
+  .cap.center h2 { font-size: clamp(32px, 4.4vw, 56px); line-height: 1.08; }
+  .cap.center p { font-size: 17px; }
+  .cap h2 em { color: #8fb56d; }
+
+  /* ===== Vitrine (tour de produtos) ===== */
+  .tour { position: relative; max-width: 1160px; margin: 0 auto; padding: 150px 24px 120px; }
+  .tour-head { text-align: center; max-width: 760px; margin: 0 auto 64px; }
+  .kicker { font-size: 13px; font-weight: 600; letter-spacing: .04em; color: var(--accent); margin-bottom: 18px; }
+  .tour-head h2 { font-family: 'Petrona', serif; font-weight: 400; font-size: clamp(34px, 4.6vw, 58px); line-height: 1.08; margin: 0 0 18px; color: var(--ink); text-wrap: balance; }
+  .tour-head h2 em { color: var(--leaf); }
+  .tour-head p { font-size: 17px; line-height: 1.7; color: var(--muted); margin: 0; }
+  .tour-body { display: flex; flex-wrap: wrap; gap: 56px; align-items: center; justify-content: center; }
+
+  /* Vitrine flutuante */
+  .shelf-outer { flex: 0 0 auto; }
+  .shelf { width: 360px; border: 1px solid var(--card-border); border-radius: 28px; padding: 10px; background: #060905; box-shadow: 0 40px 120px rgba(0,0,0,.6); animation: floaty 6s ease-in-out infinite; }
+  .shelf-screen { position: relative; border-radius: 20px; overflow: hidden; background: #101710; height: 560px; display: flex; flex-direction: column; }
+  .shelf-top { display: flex; align-items: center; justify-content: space-between; padding: 20px 20px 14px; border-bottom: 1px solid rgba(255,255,255,.07); }
+  .shelf-top .slogo { font-family: 'Petrona', serif; font-size: 19px; color: #eef2e4; display: inline-flex; align-items: center; gap: 7px; }
+  .shelf-top .slogo svg { width: 12px; height: 15px; }
+  .shelf-top .stag { font-size: 12px; font-weight: 600; color: #8a977e; letter-spacing: .06em; }
+  .shelf-leaf { position: absolute; top: -30px; right: -34px; width: 130px; opacity: .2; transform-origin: top right; animation: leafsway 7s ease-in-out infinite; pointer-events: none; }
+  .pane { display: none; flex: 1; padding: 18px 20px; flex-direction: column; gap: 10px; }
+  .pane.active { display: flex; }
+  .prod { background: #171f14; border: 1px solid rgba(255,255,255,.07); border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 12px; }
+  .prod .pico { flex: 0 0 auto; width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: rgba(143,181,109,.14); }
+  .prod .pico svg { width: 20px; height: 20px; stroke: #8fb56d; fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+  .prod .pt { font-size: 13px; color: #eef2e4; font-weight: 500; }
+  .prod .pd { font-size: 12px; color: #8a977e; }
+  .prod .pp { margin-left: auto; font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; color: #cdb069; white-space: nowrap; }
+  .pane-note { margin-top: auto; font-size: 12px; color: #8a977e; text-align: center; }
+
+  /* Abas */
+  .tour-tabs { flex: 1 1 360px; min-width: 300px; max-width: 460px; display: flex; flex-direction: column; gap: 12px; }
+  .tour-tabs button { text-align: left; cursor: pointer; border-radius: 16px; padding: 16px 20px; background: transparent; border: 1px solid var(--border); color: var(--muted); transition: all .3s ease; }
+  .tour-tabs button.active { background: var(--panel); border-color: var(--accent-border); color: var(--ink); box-shadow: 0 16px 50px rgba(0,0,0,.25); }
+  .tour-tabs .ttitle { display: block; font-size: 17px; font-weight: 600; margin: 0 0 2px; }
+  .tour-tabs .tdesc { display: block; font-size: 13px; opacity: .8; line-height: 1.5; }
+
+  /* ===== CTA final ===== */
+  .cta { position: relative; text-align: center; padding: 150px 24px 140px; overflow: hidden; }
+  .cta-grad { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 100%, var(--leaf-soft), transparent 60%); }
+  .cta-inner { position: relative; z-index: 2; }
+  .cta h2 { font-family: 'Petrona', serif; font-weight: 400; font-size: clamp(38px, 5.5vw, 72px); line-height: 1.08; margin: 0 auto 22px; max-width: 860px; color: var(--ink); text-wrap: balance; }
+  .cta h2 em { color: var(--leaf); }
+  .cta p { font-size: 18px; color: var(--muted); margin: 0 0 40px; }
+  .cta .btn { font-size: 18px; padding: 18px 40px; box-shadow: 0 12px 50px var(--accent-glow); }
+
+  /* ===== Footer ===== */
+  footer { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; max-width: 1160px; margin: 0 auto; padding: 32px 24px 44px; border-top: 1px solid var(--border); font-size: 13px; color: var(--faint); }
+  footer .flogo { font-family: 'Petrona', serif; font-size: 19px; color: var(--ink); display: inline-flex; align-items: center; gap: 7px; }
+  footer .flogo svg { width: 12px; height: 15px; }
+  footer a { font-size: 13px; }
+
+  /* ===== Mobile ===== */
+  @media (max-width: 640px) {
+    nav { padding: 12px 16px; }
+    .nav-right .btn { font-size: 13px; padding: 8px 14px; }
+    .cap.left, .cap.right { left: 6%; right: 6%; max-width: none; text-align: left; }
+    .tour { padding: 100px 20px 80px; }
+    .cta { padding: 100px 20px 100px; }
+    .shelf { width: min(360px, 92vw); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shelf, .shelf-leaf { animation: none; }
+    .fx { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="pbar" role="progressbar" aria-label="Progresso da página" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <g id="i-folha"><path d="M12 3 C7 8 5.5 13 12 21 C18.5 13 17 8 12 3 Z"/><path d="M12 7 L12 18"/></g>
+    <g id="i-gota"><path d="M12 3 C8.5 8 6.5 11 6.5 14 a5.5 5.5 0 0 0 11 0 C17.5 11 15.5 8 12 3 Z"/></g>
+    <g id="i-barra"><rect x="5" y="7" width="14" height="10" rx="2.5"/><circle cx="9.5" cy="11" r="1"/><circle cx="14" cy="13" r="1"/></g>
+    <g id="i-pote"><path d="M6 9 h12 v8 a3 3 0 0 1 -3 3 h-6 a3 3 0 0 1 -3 -3 Z"/><path d="M7.5 9 V6.5 a1.5 1.5 0 0 1 1.5 -1.5 h6 a1.5 1.5 0 0 1 1.5 1.5 V9"/></g>
+    <g id="i-pente"><path d="M6 4 v16"/><path d="M6 6 h12 v4 H6"/><path d="M10 10 v5"/><path d="M14 10 v4"/><path d="M18 10 v6"/></g>
+    <g id="i-vela"><path d="M8 11 h8 v9 H8 Z"/><path d="M12 8 c2 -1.6 1.2 -3.6 0 -5 c-1.2 1.4 -2 3.4 0 5 Z"/></g>
+    <g id="i-vapor"><path d="M8 20 c-1.5 -2.5 1.5 -4 0 -6.5"/><path d="M12 20 c-1.5 -2.5 1.5 -4 0 -7.5"/><path d="M16 20 c-1.5 -2.5 1.5 -4 0 -6.5"/><path d="M5 20 h14"/></g>
+    <g id="i-xicara"><path d="M5 8 h11 v6 a5 5 0 0 1 -5 5 h-1 a5 5 0 0 1 -5 -5 Z"/><path d="M16 9.5 h1.5 a2.5 2.5 0 0 1 0 5 H16"/></g>
+    <g id="i-toalha"><path d="M6 4 h9 a2 2 0 0 1 2 2 v14 H8 a2 2 0 0 1 -2 -2 Z"/><path d="M17 8 H9"/></g>
+    <g id="i-presente"><rect x="5" y="10" width="14" height="9" rx="1.5"/><path d="M5 13 h14"/><path d="M12 10 v9"/><path d="M12 10 c-4 0 -5 -4 -2.5 -4.5 C11.5 5 12 8 12 10 c0 -2 .5 -5 2.5 -4.5 C17 6 16 10 12 10 Z"/></g>
+    <g id="i-lua"><path d="M17.5 14.5 A7 7 0 1 1 9.5 6.5 a6 6 0 0 0 8 8 Z"/></g>
+    <g id="i-carta"><rect x="4.5" y="7" width="15" height="11" rx="2"/><path d="M5 8.5 l7 5 l7 -5"/></g>
+  </defs>
+</svg>
+
+<nav>
+  <span class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="#8fb56d" stroke-width="1.5"><use href="#i-folha"/></svg>Bamboo</span>
+  <div class="nav-right">
+    <a class="btn" href="#vitrine" style="font-size: 14px; padding: 9px 18px;">Entrar na loja</a>
+  </div>
+</nav>
+
+<header>
+  <div class="hero-bg" aria-hidden="true"><img src="media/poster.jpg" alt=""></div>
+  <div class="hero-grad"></div>
+  <div id="herocontent">
+    <h1 class="fx">Atrás de cada <em>folha</em>,<br>um cuidado esperando.</h1>
+    <p class="hero-sub fx" style="--fxd: 120ms;">Parece uma floresta, mas é a nossa loja: folhas gigantes, como os leques de antigamente, escondendo óleos, máscaras e rituais. Role a página e empurre a primeira.</p>
+    <div class="hero-ctas fx" style="--fxd: 240ms;">
+      <a class="btn" href="#vitrine" style="font-size: 16px; padding: 15px 30px;">Entrar na loja</a>
+    </div>
+  </div>
+</header>
+
+<section id="scrubwrap" aria-label="O corredor de folhas, história em 6 cenas">
+  <div class="scrub-sticky">
+    <video id="scrubvid" src="media/corredor-scrub.mp4" muted playsinline preload="auto"></video>
+    <div class="scrub-shade"></div>
+
+    <div class="cap left" id="cap0">
+      <div class="cap-tag">A entrada</div>
+      <h2>Folhas gigantes, como leques antigos.</h2>
+      <p>Na Idade Média, abanavam reis. Aqui, elas guardam o que você veio buscar.</p>
+    </div>
+
+    <div class="cap right" id="cap1">
+      <div class="cap-tag">Primeiro achado</div>
+      <h2>A primeira folha cede.</h2>
+      <p>Atrás dela: óleos capilares e shampoos naturais. Feitos de planta, revelados por plantas.</p>
+    </div>
+
+    <div class="cap left" id="cap2" style="max-width: 500px;">
+      <div class="cap-tag">Cabelo</div>
+      <h2>Máscaras, pentes de madeira, sérum.</h2>
+      <p>Cada folha aberta é um cuidado a mais pro seu cabelo, do couro à ponta.</p>
+    </div>
+
+    <div class="cap right" id="cap3" style="max-width: 500px;">
+      <div class="cap-tag">Bem-estar</div>
+      <h2>Velas, sais de banho, toalhas macias.</h2>
+      <p>O corredor não cuida só do cabelo. Cuida do resto do dia também.</p>
+    </div>
+
+    <div class="cap left" id="cap4">
+      <div class="cap-tag">O ritual</div>
+      <h2>Folha por folha, o ritual se monta.</h2>
+      <p>O que era corredor virou coleção: cada achado no seu lugar.</p>
+    </div>
+
+    <div class="cap center" id="cap5">
+      <div class="cap-tag">A clareira</div>
+      <h2>As últimas folhas se abrem.<br>Bem-vinda à <em>Bamboo</em>.</h2>
+      <p>Tudo que o corredor escondia está na vitrine, a um toque de distância.</p>
+    </div>
+  </div>
+</section>
+
+<section class="tour" id="vitrine">
+  <div class="tour-head">
+    <div class="kicker fx">A vitrine da clareira</div>
+    <h2 class="fx" style="--fxd: 100ms;">Tudo que as folhas <em>escondiam</em>.</h2>
+    <p class="fx" style="--fxd: 200ms;">Cabelo, banho e bem-estar: produtos naturais escolhidos a dedo, do jeito que a floresta entregaria. Sem pressa e sem excesso.</p>
+  </div>
+
+  <div class="tour-body">
+    <div class="shelf-outer fx" style="--fxd: 120ms;">
+      <div class="shelf">
+        <div class="shelf-screen">
+          <svg class="shelf-leaf" viewBox="0 0 100 140"><path d="M50 5 C20 40 12 85 50 135 C88 85 80 40 50 5 Z" fill="#8fb56d"/><path d="M50 12 L50 128" stroke="#0a0f0a" stroke-width="2"/></svg>
+          <div class="shelf-top">
+            <span class="slogo"><svg viewBox="0 0 24 24" fill="none" stroke="#8fb56d" stroke-width="1.5"><use href="#i-folha"/></svg>Bamboo</span>
+            <span class="stag">vitrine</span>
+          </div>
+
+          <div class="pane active" id="pane0">
+            <div class="prod"><span class="pico"><svg viewBox="0 0 24 24"><use href="#i-gota"/></svg></span><div><div class="pt">Óleo capilar de pracaxi</div><div class="pd">pontas seladas · brilho natural</div></div><span class="pp">R$ 62</span></div>
+            <div class="prod"><span class="pico"><svg viewBox="0 0 24 24"><use href="#i-barra"/></svg></span><div><div class="pt">Shampoo sólido de alecrim</div><div class="pd">rende até 60 lavagens</div></div><span class="pp">R$ 38</span></div>
+            <div class="prod"><span class="pico"><svg viewBox="0 0 24 24"><use href="#i-pote"/></svg></span><div><div class="pt">Máscara de murumuru</div><div class="pd">nutrição profunda · 250g</div></div><span class="pp">R$ 54</span></div>
+            <div class="prod"><span class="pico"><svg viewBox="0 0 24 24"><use href="#i-pente"/></svg></span><div><div class="pt">Pente largo de madeira</div><div class="pd">antifrizz · feito à mão</div></div><span class="pp">R$ 29</span></div>
+            <div class="pane-note">nenhum ingrediente que você não saiba pronunciar</div>
+          </div>
+
+          <div class="pane" id="pane1">
+            <div class="prod"><span class="pico"><svg viewBox="0 0 24 24"><use href="#i-barra"/></svg></span><div><div class="pt">Sabonete de argila verde</div><div class="pd">limpeza suave · rosto e corpo</div></div><span class="pp">R$ 24</span></div>
+            <div class="prod"><span class="pico"><svg viewBox="0 0 24 24"><use href="#i-pote"/></svg></span><div><div class="pt">Sais de banho relaxantes</div><div class="pd">lavanda + eucalipto · 400g</div></div><span class="pp">R$ 46</span></div>
+            <div class="prod"><span class="pico"><svg viewBox="0 0 24 24"><use href="#i-vapor"/></svg></span><div><div class="pt">Esfoliante de aveia</div><div class="pd">pele macia sem agredir</div></div><span class="pp">R$ 35</span></div>
+            <div class="prod"><span class="pico"><svg viewBox="0 0 24 24"><use href="#i-gota"/></svg></span><div><div class="pt">Óleo de banho de camomila</div><div class="pd">3 gotas por banheira</div></div><span class="pp">R$ 58</span></div>
+            <div class="pane-note">o banho vira a melhor parte do dia</div>
+          </div>
+
+          <div class="pane" id="pane2">
+            <div class="prod"><span class="pico"><svg viewBox="0 0 24 24"><use href="#i-vela"/></svg></span><div><div class="pt">Vela de capim-limão</div><div class="pd">40h de queima · cera vegetal</div></div><span class="pp">R$ 49</span></div>
+            <div class="prod"><span class="pico"><svg viewBox="0 0 24 24"><use href="#i-vapor"/></svg></span><div><div class="pt">Difusor de bambu</div><div class="pd">varetas + óleo essencial</div></div><span class="pp">R$ 72</span></div>
+            <div class="prod"><span class="pico"><svg viewBox="0 0 24 24"><use href="#i-xicara"/></svg></span><div><div class="pt">Blend de chá da tarde</div><div class="pd">camomila, erva-doce e melissa</div></div><span class="pp">R$ 32</span></div>
+            <div class="prod"><span class="pico"><svg viewBox="0 0 24 24"><use href="#i-toalha"/></svg></span><div><div class="pt">Toalha de rosto premium</div><div class="pd">algodão orgânico · extra macia</div></div><span class="pp">R$ 44</span></div>
+            <div class="pane-note">bem-estar não é luxo. É rotina.</div>
+          </div>
+
+          <div class="pane" id="pane3">
+            <div class="prod"><span class="pico"><svg viewBox="0 0 24 24"><use href="#i-presente"/></svg></span><div><div class="pt">Kit Primeira Folha</div><div class="pd">shampoo + óleo + pente</div></div><span class="pp">R$ 109</span></div>
+            <div class="prod"><span class="pico"><svg viewBox="0 0 24 24"><use href="#i-lua"/></svg></span><div><div class="pt">Ritual da Noite</div><div class="pd">vela + sais + chá</div></div><span class="pp">R$ 115</span></div>
+            <div class="prod"><span class="pico"><svg viewBox="0 0 24 24"><use href="#i-folha"/></svg></span><div><div class="pt">Corredor Completo</div><div class="pd">a loja inteira em uma caixa</div></div><span class="pp">R$ 219</span></div>
+            <div class="prod"><span class="pico"><svg viewBox="0 0 24 24"><use href="#i-carta"/></svg></span><div><div class="pt">Vale-presente Bamboo</div><div class="pd">deixe a pessoa escolher a folha</div></div><span class="pp">R$ 50+</span></div>
+            <div class="pane-note">todo kit vai embrulhado em papel semente: plante depois</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tour-tabs fx" style="--fxd: 200ms;">
+      <button type="button" class="active" data-tab="0"><span class="ttitle">Cabelo</span><span class="tdesc">Óleos, máscaras, shampoos sólidos e pentes de madeira: a primeira fileira de folhas.</span></button>
+      <button type="button" data-tab="1"><span class="ttitle">Corpo &amp; banho</span><span class="tdesc">Sabonetes, sais e esfoliantes pra transformar o chuveiro em rio.</span></button>
+      <button type="button" data-tab="2"><span class="ttitle">Bem-estar</span><span class="tdesc">Velas, difusores e chás: o que fica no ar depois que o banho acaba.</span></button>
+      <button type="button" data-tab="3"><span class="ttitle">Kits &amp; rituais</span><span class="tdesc">Combinações prontas pra presentear, ou pra montar o seu próprio corredor.</span></button>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="cta-grad"></div>
+  <div class="cta-inner">
+    <h2 class="fx">A floresta era só o caminho.<br><em>O cuidado é de verdade.</em></h2>
+    <p class="fx" style="--fxd: 150ms;">Frete grátis acima de R$ 149 · primeira troca por nossa conta.</p>
+    <a class="btn fx" style="--fxd: 280ms;" href="#vitrine">Entrar na loja</a>
+  </div>
+</section>
+
+<footer>
+  <span class="flogo"><svg viewBox="0 0 24 24" fill="none" stroke="#8fb56d" stroke-width="1.5"><use href="#i-folha"/></svg>Bamboo</span>
+  <span>© 2026 Bamboo · cosméticos de cabelo &amp; bem-estar</span>
+  <a href="#">@bamboo</a>
+</footer>
+
+<script>
+(function () {
+  var vh = window.innerHeight;
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ===== Abas da vitrine ===== */
+  var tabButtons = document.querySelectorAll('.tour-tabs button');
+  tabButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      tabButtons.forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      for (var i = 0; i < 4; i++) {
+        document.getElementById('pane' + i).classList.toggle('active', String(i) === btn.dataset.tab);
+      }
+    });
+  });
+
+  /* ===== Vídeo com scrub: fallback se falhar ===== */
+  var wrap = document.getElementById('scrubwrap');
+  var vid = document.getElementById('scrubvid');
+  vid.muted = true;
+  try { vid.pause(); } catch (e) {}
+  function disableScrub() { wrap.classList.add('disabled'); }
+  vid.addEventListener('error', disableScrub);
+  if (vid.error) disableScrub();
+
+  var seekBusy = false, smoothT = 0, targetT = 0, scrubRaf = null;
+  vid.addEventListener('seeked', function () { seekBusy = false; });
+
+  function scrubStep() {
+    var cur = smoothT || vid.currentTime || 0;
+    // suaviza em direção ao alvo pra manter o scrub fluido mesmo com seeks lentos
+    var next = cur + (targetT - cur) * 0.22;
+    smoothT = next;
+    var diff = Math.abs(next - (vid.currentTime || 0));
+    // nunca emite um novo seek enquanto o anterior ainda decodifica
+    if (!seekBusy && diff > 0.034 && vid.readyState > 0) {
+      seekBusy = true;
+      try { vid.currentTime = next; } catch (e) { seekBusy = false; }
+    }
+    if (Math.abs(targetT - next) < 0.01 && diff < 0.034) { scrubRaf = null; return; }
+    scrubRaf = requestAnimationFrame(scrubStep);
+  }
+  function startScrub() { if (!scrubRaf) scrubRaf = requestAnimationFrame(scrubStep); }
+
+  /* ===== Loop de scroll ===== */
+  var N = 6;
+  var pbar = document.getElementById('pbar');
+  var hero = document.getElementById('herocontent');
+  var fxEls = document.querySelectorAll('.fx');
+
+  function update() {
+    var y = window.scrollY;
+    var doc = document.documentElement;
+
+    var max = doc.scrollHeight - vh;
+    var pct = max > 0 ? (y / max) * 100 : 0;
+    pbar.style.width = pct + '%';
+    pbar.setAttribute('aria-valuenow', String(Math.round(pct)));
+
+    hero.style.transform = 'translateY(' + (y * 0.16) + 'px)';
+    hero.style.opacity = String(Math.max(0, 1 - y / (vh * 0.9)));
+
+    fxEls.forEach(function (el) {
+      if (el.classList.contains('on')) return;
+      var r = el.getBoundingClientRect();
+      if (r.top < vh * 0.88 && r.bottom > -vh * 0.2) el.classList.add('on');
+    });
+
+    if (!wrap.classList.contains('disabled')) {
+      var r = wrap.getBoundingClientRect();
+      var total = r.height - vh;
+      var p = Math.min(1, Math.max(0, total > 0 ? -r.top / total : 0));
+      if (!reducedMotion && vid.duration) {
+        targetT = p * Math.max(0, vid.duration - 0.1);
+        startScrub();
+      }
+      var cur = Math.min(N - 1, Math.floor(p * N));
+      for (var i = 0; i < N; i++) {
+        var c = document.getElementById('cap' + i);
+        c.classList.toggle('show', i === cur && r.top <= 0 && p < 1.001);
+      }
+    }
+  }
+
+  var rafPending = false;
+  function onScroll() {
+    if (!rafPending) { rafPending = true; requestAnimationFrame(function () { rafPending = false; update(); }); }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () { vh = window.innerHeight; onScroll(); });
+
+  update();
+  setTimeout(update, 300);
+  setTimeout(update, 1200);
+})();
+</script>
+</body>
+</html>

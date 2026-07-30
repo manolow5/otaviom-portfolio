@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Órbita — Método de lançamento</title>
+<meta name="description" content="O método que transforma audiência em lançamento: seis fases, um funil. Atravesse o corredor de portais e veja cada fase abrir.">
+<meta property="og:title" content="Órbita — seis fases até o lançamento">
+<meta property="og:description" content="Atravesse os portais. Cada um é uma fase do método.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #05060d; --panel: #0b0d1a; --ink: #e8e9f2; --muted: #9aa0b8; --faint: #646b85;
+    --violet: #8b5cf6; --cyan: #22d3ee; --violet-soft: rgba(139,92,246,.14); --violet-border: rgba(139,92,246,.4);
+    --border: rgba(255,255,255,.09); --navbg: rgba(5,6,13,.75);
+  }
+  html, body { margin: 0; padding: 0; background: var(--page); color: var(--ink); font-family: 'IBM Plex Mono', monospace; scrollbar-color: #23263a var(--page); }
+  a { color: var(--cyan); text-decoration: none; }
+  ::selection { background: var(--violet-soft); }
+  .disp { font-family: 'Unbounded', sans-serif; }
+
+  @keyframes hintdown { 0% { transform: translateY(0); opacity: .9; } 100% { transform: translateY(10px); opacity: 0; } }
+
+  #pbar { position: fixed; top: 0; left: 0; height: 2px; width: 0%; background: linear-gradient(90deg, var(--violet), var(--cyan)); z-index: 90; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 80; display: flex; align-items: center; justify-content: space-between; padding: 14px 28px; background: var(--navbg); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+  .logo { font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: 18px; letter-spacing: .04em; }
+  .logo b { color: var(--violet); font-weight: 700; }
+  .btn { display: inline-block; background: var(--violet); color: #0b0716; font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 13px; padding: 11px 22px; border-radius: 8px; transition: all .25s ease; }
+  .btn:hover { background: var(--cyan); }
+
+  .fx { opacity: 0; transform: translateY(24px); }
+  .fx.on { opacity: 1; transform: none; transition: opacity .9s cubic-bezier(.22,.61,.36,1) var(--fxd, 0ms), transform .9s cubic-bezier(.22,.61,.36,1) var(--fxd, 0ms); }
+
+  /* ===== Hero ===== */
+  header { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .hero-grad { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 110%, rgba(139,92,246,.18), transparent 55%), radial-gradient(ellipse at 85% 0%, rgba(34,211,238,.08), transparent 45%); }
+  #herocontent { position: relative; z-index: 2; text-align: center; max-width: 920px; padding: 120px 24px 80px; }
+  .term-tag { display: inline-flex; align-items: center; gap: 10px; font-size: 12px; letter-spacing: .08em; color: var(--cyan); border: 1px solid rgba(34,211,238,.35); border-radius: 8px; padding: 9px 16px; background: rgba(34,211,238,.05); }
+  header h1 { font-family: 'Unbounded', sans-serif; font-weight: 300; font-size: clamp(34px, 5.6vw, 68px); line-height: 1.12; margin: 34px 0 22px; }
+  header h1 b { font-weight: 700; color: var(--violet); }
+  .hero-sub { font-size: clamp(14px, 1.7vw, 17px); line-height: 1.75; color: var(--muted); max-width: 620px; margin: 0 auto 40px; }
+  .hero-ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; align-items: center; }
+  .hero-note { font-size: 12px; color: var(--faint); }
+  .scroll-hint { position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--faint); font-size: 11px; letter-spacing: .22em; text-transform: uppercase; }
+  .scroll-hint span { display: block; width: 1px; height: 26px; background: var(--violet); animation: hintdown 1.6s infinite; }
+
+  /* ===== Corredor de portais (scrub) — legendas terminal ===== */
+  #scrubwrap { position: relative; height: 640vh; }
+  #scrubwrap.disabled { height: 0; }
+  .scrub-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #05060d; }
+  #scrubvid { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .scrub-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(5,6,13,.5) 0%, transparent 32%, transparent 60%, rgba(5,6,13,.82) 100%); }
+
+  .cap { opacity: 0; transform: translateY(24px); transition: opacity .55s ease, transform .55s ease; position: absolute; bottom: 9%; z-index: 3; max-width: 560px; width: calc(100% - 10%); }
+  .cap.left { left: 5%; }
+  .cap.right { right: 5%; }
+  .cap .term { background: rgba(5,6,13,.72); border: 1px solid var(--border); border-radius: 12px; padding: 22px 24px; backdrop-filter: blur(10px); }
+  .cap .phase-num { font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: clamp(38px, 5vw, 64px); line-height: 1; color: var(--violet); margin-bottom: 8px; }
+  .cap h2 { font-family: 'Unbounded', sans-serif; font-weight: 500; font-size: clamp(19px, 2.3vw, 27px); line-height: 1.25; margin: 0 0 10px; color: var(--ink); }
+  .cap p { font-size: 13px; line-height: 1.7; color: var(--muted); margin: 0; }
+  .cap p .ok { color: var(--cyan); }
+  .cap.center { left: 50%; right: auto; transform: translate(-50%, 24px); text-align: left; }
+  .cap.center.show { transform: translate(-50%, 0); }
+
+  /* ===== Números ===== */
+  .stats { position: relative; max-width: 1000px; margin: 0 auto; padding: 130px 24px 40px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .stat { text-align: center; border: 1px solid var(--border); border-radius: 14px; padding: 34px 18px 28px; background: var(--panel); }
+  .stat .num { font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: clamp(34px, 4.6vw, 56px); line-height: 1; color: var(--violet); }
+  .stat .lbl { margin-top: 12px; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--faint); line-height: 1.6; }
+
+  /* ===== Módulos (accordion) ===== */
+  .mods { position: relative; max-width: 860px; margin: 0 auto; padding: 90px 24px 120px; }
+  .mods-head { text-align: center; margin-bottom: 54px; }
+  .mods-head h2 { font-family: 'Unbounded', sans-serif; font-weight: 500; font-size: clamp(26px, 3.8vw, 44px); line-height: 1.2; margin: 14px 0; }
+  .mods-head h2 b { color: var(--violet); font-weight: 700; }
+  .mods-head p { font-size: 14px; line-height: 1.75; color: var(--muted); margin: 0 auto; max-width: 560px; }
+  .kicker { font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: var(--cyan); }
+  details { border: 1px solid var(--border); border-radius: 12px; background: var(--panel); margin-bottom: 12px; overflow: hidden; }
+  details[open] { border-color: var(--violet-border); }
+  summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 16px; padding: 20px 22px; }
+  summary::-webkit-details-marker { display: none; }
+  summary .ph { font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: 15px; color: var(--violet); white-space: nowrap; }
+  summary h3 { font-family: 'Unbounded', sans-serif; font-weight: 500; font-size: 15px; margin: 0; flex: 1; line-height: 1.4; }
+  summary .arrow { color: var(--faint); transition: transform .3s ease; }
+  details[open] summary .arrow { transform: rotate(90deg); color: var(--cyan); }
+  .mod-body { padding: 0 22px 22px 22px; font-size: 13px; line-height: 1.75; color: var(--muted); }
+  .mod-body .chip { display: inline-block; margin: 10px 8px 0 0; font-size: 11px; letter-spacing: .08em; color: var(--cyan); border: 1px solid rgba(34,211,238,.3); border-radius: 6px; padding: 4px 10px; }
+
+  /* ===== CTA ===== */
+  .cta { position: relative; text-align: center; padding: 140px 24px 130px; border-top: 1px solid var(--border); overflow: hidden; }
+  .cta-grad { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 100%, rgba(139,92,246,.16), transparent 60%); }
+  .cta-inner { position: relative; z-index: 2; }
+  .cta h2 { font-family: 'Unbounded', sans-serif; font-weight: 500; font-size: clamp(28px, 4.6vw, 56px); line-height: 1.16; margin: 0 auto 20px; max-width: 800px; }
+  .cta h2 b { color: var(--violet); font-weight: 700; }
+  .cta p { font-size: 14px; color: var(--muted); margin: 0 0 38px; }
+  .cta .btn { font-size: 15px; padding: 16px 36px; }
+
+  footer { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; max-width: 1160px; margin: 0 auto; padding: 30px 24px 42px; border-top: 1px solid var(--border); font-size: 12px; color: var(--faint); }
+  footer .flogo { font-family: 'Unbounded', sans-serif; font-weight: 700; font-size: 15px; color: var(--ink); }
+  footer .flogo b { color: var(--violet); }
+
+  @media (max-width: 720px) { .stats { grid-template-columns: 1fr; padding-top: 100px; } }
+  @media (max-width: 640px) {
+    nav { padding: 12px 16px; }
+    .cap.left, .cap.right { left: 4%; right: 4%; max-width: none; width: auto; }
+    .mods { padding: 70px 20px 90px; }
+    .cta { padding: 100px 20px 100px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+  }
+</style>
+</head>
+<body>
+
+<div id="pbar"></div>
+
+<nav>
+  <div class="logo">ÓRBI<b>TA</b></div>
+  <a class="btn" href="#metodo">Entrar na órbita</a>
+</nav>
+
+<header>
+  <div class="hero-grad"></div>
+  <div id="herocontent">
+    <span class="term-tag fx">método órbita · turma 07</span>
+    <h1 class="fx" style="--fxd: 120ms;">Audiência não paga boleto.<br><b>Lançamento paga.</b></h1>
+    <p class="hero-sub fx" style="--fxd: 240ms;">Órbita é o método que transforma seguidores em faturamento em seis fases. Role a página: cada portal que se abre à sua frente é uma fase do funil.</p>
+    <div class="hero-ctas fx" style="--fxd: 360ms;">
+      <a class="btn" href="#metodo">Ver o método completo</a>
+      <span class="hero-note">turma 07 · vagas limitadas</span>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    iniciar travessia
+    <span></span>
+  </div>
+</header>
+
+<section id="scrubwrap" aria-label="As seis fases do método">
+  <div class="scrub-sticky">
+    <video id="scrubvid" src="media/corredor-scrub.mp4?v=2" muted playsinline preload="auto"></video>
+    <div class="scrub-shade"></div>
+
+
+    <div class="cap left" id="cap0">
+      <div class="term">
+        <div class="phase-num">01</div>
+        <h2>Posicionamento</h2>
+        <p>Antes de vender, ser lembrado. Nicho, promessa e a big idea que sustenta o resto. <span class="ok">✓ clareza absoluta do que você vende</span></p>
+      </div>
+    </div>
+    <div class="cap right" id="cap1">
+      <div class="term">
+        <div class="phase-num">02</div>
+        <h2>Audiência mínima viável</h2>
+        <p>Não precisa de 100 mil seguidores. Precisa dos 1.000 certos. Conteúdo com intenção, não com frequência. <span class="ok">✓ lista própria crescendo</span></p>
+      </div>
+    </div>
+    <div class="cap left" id="cap2">
+      <div class="term">
+        <div class="phase-num">03</div>
+        <h2>Oferta irresistível</h2>
+        <p>Produto, preço, bônus e garantia montados como uma oferta única, não um PDF a mais. <span class="ok">✓ oferta validada em pré-venda</span></p>
+      </div>
+    </div>
+    <div class="cap right" id="cap3">
+      <div class="term">
+        <div class="phase-num">04</div>
+        <h2>Aquecimento</h2>
+        <p>As duas semanas que decidem o lançamento: narrativa, antecipação e o evento gratuito que puxa a fila. <span class="ok">✓ audiência pedindo o link</span></p>
+      </div>
+    </div>
+    <div class="cap left" id="cap4">
+      <div class="term">
+        <div class="phase-num">05</div>
+        <h2>Carrinho aberto</h2>
+        <p>Sete dias de execução cirúrgica: e-mails, lives de objeção, provas e escassez real, sem gatilho falso. <span class="ok">✓ conversão acima de 2%</span></p>
+      </div>
+    </div>
+    <div class="cap center" id="cap5">
+      <div class="term">
+        <div class="phase-num">06</div>
+        <h2>Perpétuo</h2>
+        <p>O lançamento vira máquina: funil evergreen rodando enquanto você prepara o próximo. <span class="ok">✓ receita todo mês, não só na semana do evento</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats" id="numeros">
+  <div class="stat fx"><div class="num" data-count="1284">0</div><div class="lbl">alunos formados<br>nas turmas 01–06</div></div>
+  <div class="stat fx" style="--fxd: 120ms;"><div class="num" data-count="94" data-suffix="%">0%</div><div class="lbl">concluem as seis fases<br>dentro de 90 dias</div></div>
+  <div class="stat fx" style="--fxd: 240ms;"><div class="num" data-count="63" data-prefix="R$ " data-suffix=" mi">0</div><div class="lbl">faturados por alunos<br>desde 2023</div></div>
+</section>
+
+<section class="mods" id="metodo">
+  <div class="mods-head">
+    <span class="kicker fx">dentro do programa</span>
+    <h2 class="fx" style="--fxd: 100ms;">As seis fases, <b>abertas</b>.</h2>
+    <p class="fx" style="--fxd: 200ms;">Cada fase tem aulas gravadas, templates prontos e uma mentoria ao vivo por semana. Clique para expandir.</p>
+  </div>
+  <div class="fx" style="--fxd: 250ms;">
+    <details open>
+      <summary><span class="ph">F1</span><h3>Posicionamento</h3><span class="arrow">›</span></summary>
+      <div class="mod-body">Matriz de nicho, arquitetura de promessa e construção da big idea. Você sai com o discurso de uma linha que vende sozinho.<br><span class="chip">6 aulas</span><span class="chip">template de posicionamento</span></div>
+    </details>
+    <details>
+      <summary><span class="ph">F2</span><h3>Audiência mínima viável</h3><span class="arrow">›</span></summary>
+      <div class="mod-body">Sistema de conteúdo semanal, captura para lista própria e o protocolo dos 1.000 certos.<br><span class="chip">8 aulas</span><span class="chip">calendário editorial</span></div>
+    </details>
+    <details>
+      <summary><span class="ph">F3</span><h3>Oferta irresistível</h3><span class="arrow">›</span></summary>
+      <div class="mod-body">Formato do produto, escada de preço, bônus que resolvem objeção e garantia que tira o medo.<br><span class="chip">7 aulas</span><span class="chip">planilha de oferta</span></div>
+    </details>
+    <details>
+      <summary><span class="ph">F4</span><h3>Aquecimento</h3><span class="arrow">›</span></summary>
+      <div class="mod-body">Roteiro dos 14 dias, narrativa de antecipação e o desenho do evento gratuito.<br><span class="chip">9 aulas</span><span class="chip">roteiros prontos</span></div>
+    </details>
+    <details>
+      <summary><span class="ph">F5</span><h3>Carrinho aberto</h3><span class="arrow">›</span></summary>
+      <div class="mod-body">Sequência de e-mails, lives de objeção, gestão de provas sociais e fechamento.<br><span class="chip">10 aulas</span><span class="chip">swipe file de e-mails</span></div>
+    </details>
+    <details>
+      <summary><span class="ph">F6</span><h3>Perpétuo</h3><span class="arrow">›</span></summary>
+      <div class="mod-body">Transformando o lançamento em funil evergreen: tráfego, automação e otimização mensal.<br><span class="chip">8 aulas</span><span class="chip">dashboard de métricas</span></div>
+    </details>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="cta-grad"></div>
+  <div class="cta-inner">
+    <h2 class="fx">Seu primeiro lançamento está a <b>seis fases</b> de distância.</h2>
+    <p class="fx" style="--fxd: 150ms;">Turma 07 abre em agosto. Lista de espera com condição de fundador.</p>
+    <a class="btn fx" style="--fxd: 280ms;" href="#">Entrar na lista de espera</a>
+  </div>
+</section>
+
+<footer>
+  <span class="flogo">ÓRBI<b>TA</b></span>
+  <span>© 2026 Órbita Educação</span>
+  <a href="#">@orbita.metodo</a>
+</footer>
+
+<script>
+(function () {
+  var vh = window.innerHeight;
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var wrap = document.getElementById('scrubwrap');
+  var vid = document.getElementById('scrubvid');
+  vid.muted = true;
+  try { vid.pause(); } catch (e) {}
+  function disableScrub() { wrap.classList.add('disabled'); }
+  vid.addEventListener('error', disableScrub);
+  if (vid.error) disableScrub();
+
+  var seekBusy = false, smoothT = 0, targetT = 0, scrubRaf = null;
+  vid.addEventListener('seeked', function () { seekBusy = false; });
+  function scrubStep() {
+    var cur = smoothT || vid.currentTime || 0;
+    var next = cur + (targetT - cur) * 0.22;
+    smoothT = next;
+    var diff = Math.abs(next - (vid.currentTime || 0));
+    if (!seekBusy && diff > 0.034 && vid.readyState > 0) {
+      seekBusy = true;
+      try { vid.currentTime = next; } catch (e) { seekBusy = false; }
+    }
+    if (Math.abs(targetT - next) < 0.01 && diff < 0.034) { scrubRaf = null; return; }
+    scrubRaf = requestAnimationFrame(scrubStep);
+  }
+  function startScrub() { if (!scrubRaf) scrubRaf = requestAnimationFrame(scrubStep); }
+
+  /* contadores animados */
+  function animateCount(el) {
+    var target = parseInt(el.dataset.count, 10);
+    var prefix = el.dataset.prefix || '';
+    var suffix = el.dataset.suffix || '';
+    if (reducedMotion) { el.textContent = prefix + target + suffix; return; }
+    var t0 = null;
+    function step(ts) {
+      if (!t0) t0 = ts;
+      var k = Math.min(1, (ts - t0) / 1400);
+      var eased = 1 - Math.pow(1 - k, 3);
+      el.textContent = prefix + Math.round(target * eased) + suffix;
+      if (k < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  var N = 6;
+  var pbar = document.getElementById('pbar');
+  var hero = document.getElementById('herocontent');
+  var fxEls = document.querySelectorAll('.fx');
+
+  function update() {
+    var y = window.scrollY;
+    var doc = document.documentElement;
+    var max = doc.scrollHeight - vh;
+    pbar.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
+
+    hero.style.transform = 'translateY(' + (y * 0.16) + 'px)';
+    hero.style.opacity = String(Math.max(0, 1 - y / (vh * 0.9)));
+
+    fxEls.forEach(function (el) {
+      if (el.classList.contains('on')) return;
+      var r = el.getBoundingClientRect();
+      if (r.top < vh * 0.88 && r.bottom > -vh * 0.2) {
+        el.classList.add('on');
+        el.querySelectorAll('[data-count]').forEach(animateCount);
+      }
+    });
+
+    if (!wrap.classList.contains('disabled')) {
+      var r = wrap.getBoundingClientRect();
+      var total = r.height - vh;
+      var p = Math.min(1, Math.max(0, total > 0 ? -r.top / total : 0));
+      if (!reducedMotion && vid.duration) {
+        targetT = p * Math.max(0, vid.duration - 0.1);
+        startScrub();
+      }
+      var cur = Math.min(N - 1, Math.floor(p * N));
+      for (var i = 0; i < N; i++) {
+        var c = document.getElementById('cap' + i);
+        c.classList.toggle('show', i === cur && r.top <= 0 && p < 1.001);
+      }
+    }
+  }
+
+  var rafPending = false;
+  function onScroll() {
+    if (!rafPending) { rafPending = true; requestAnimationFrame(function () { rafPending = false; update(); }); }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () { vh = window.innerHeight; onScroll(); });
+  update();
+  setTimeout(update, 300);
+  setTimeout(update, 1200);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GIRO | O look inteiro, num giro</title>
+<meta name="description" content="Role a página: a modelo gira 360° e cada peça do look abre em detalhe, como numa lupa. Moda autoral em peças numeradas.">
+<meta property="og:title" content="GIRO | O look inteiro, num giro">
+<meta property="og:description" content="A modelo gira 360° e cada peça do look abre em detalhe, como numa lupa.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23ffffff'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%2316130f' stroke-width='2'/%3E%3Ccircle cx='25' cy='16' r='2.6' fill='%23c23d1a'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;0,6..96,600;1,6..96,500&family=Archivo:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #ffffff; --ink: #16130f; --muted: #6b6459; --faint: #7a7264;
+    --accent: #c23d1a; --accent-ink: #fff; --accent-border: rgba(194,61,26,.35);
+    --border: rgba(22,19,15,.12); --navbg: rgba(255,255,255,.8);
+  }
+  html, body { margin: 0; padding: 0; background: var(--page); color: var(--ink); font-family: 'Archivo', sans-serif; }
+  a { color: var(--accent); text-decoration: none; }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 2px; }
+  #pbar { position: fixed; top: 0; left: 0; height: 2px; width: 0%; background: var(--accent); z-index: 90; }
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 80; display: flex; align-items: center; justify-content: space-between; padding: 14px 28px; background: var(--navbg); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+  .logo { font-family: 'Bodoni Moda', serif; font-size: 24px; letter-spacing: .16em; text-transform: uppercase; font-weight: 500; }
+  .btn { display: inline-block; background: var(--ink); color: #fff; font-weight: 600; border-radius: 999px; transition: filter .2s ease; }
+  .btn:hover { filter: brightness(1.2); }
+  .fx { opacity: 0; transform: translateY(24px); }
+  .fx.on { opacity: 1; transform: none; transition: opacity .9s cubic-bezier(.22,.61,.36,1) var(--fxd, 0ms), transform .9s cubic-bezier(.22,.61,.36,1) var(--fxd, 0ms); }
+  header { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 88px 24px 40px; box-sizing: border-box; }
+  #herocontent { display: grid; grid-template-columns: 1fr minmax(320px, 460px); gap: clamp(32px, 5vw, 72px); align-items: center; max-width: 1160px; width: 100%; }
+  .hero-txt { text-align: left; }
+  header h1 { font-family: 'Bodoni Moda', serif; font-weight: 500; font-size: clamp(40px, 5.4vw, 76px); line-height: 1.04; margin: 0 0 22px; text-wrap: balance; }
+  header h1 em { color: var(--accent); font-style: italic; font-weight: 500; }
+  .hero-sub { font-size: clamp(16px, 1.8vw, 19px); line-height: 1.6; color: var(--muted); max-width: 480px; margin: 0 0 34px; }
+  .hero-look { position: relative; }
+  .hero-look img { display: block; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; object-position: 50% 12%; border-radius: 4px; }
+  .hero-look figcaption { margin-top: 10px; font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--faint); display: flex; justify-content: space-between; }
+  @media (max-width: 860px) {
+    #herocontent { grid-template-columns: 1fr; gap: 28px; }
+    .hero-txt { text-align: center; }
+    .hero-sub { margin: 0 auto 28px; }
+    .hero-look img { aspect-ratio: 4 / 5; }
+  }
+
+  /* ===== 360 + estações ===== */
+  #scrubwrap { position: relative; height: 720vh; }
+  #scrubwrap.disabled { height: 0; }
+  .scrub-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #fff; }
+  #scrubcanvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .estacao { position: absolute; inset: 0; pointer-events: none; }
+  .estacao .lupa { position: absolute; width: 200px; height: 200px; border-radius: 50%; border: 2px solid var(--ink); box-shadow: 0 18px 60px rgba(0,0,0,.18); background: #fff; transform: scale(0); transition: transform .35s cubic-bezier(.22,1,.36,1); }
+  .estacao .linha { position: absolute; height: 1.5px; background: var(--ink); transform-origin: left center; opacity: 0; transition: opacity .25s ease .15s; }
+  .estacao .card { position: absolute; top: 50%; transform: translateY(-50%) translateX(24px); opacity: 0; width: min(340px, 38vw); background: #fff; border: 1px solid var(--border); border-radius: 18px; padding: 22px 24px; box-shadow: 0 24px 80px rgba(0,0,0,.12); transition: opacity .35s ease .2s, transform .35s ease .2s; pointer-events: auto; }
+  .estacao.lado-left .card { left: 6%; }
+  .estacao.lado-right .card { right: 6%; }
+  .estacao .card .tag { font-size: 12px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  .estacao .card h3 { font-family: 'Bodoni Moda', serif; font-weight: 400; font-size: 28px; margin: 0 0 10px; }
+  .estacao .card p { font-size: 14px; line-height: 1.6; color: var(--muted); margin: 0 0 14px; }
+  .estacao .card .rodape { display: flex; align-items: center; justify-content: space-between; }
+  .estacao .card .preco { font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .estacao .card .btn { font-size: 13px; padding: 8px 16px; }
+  .estacao.show .lupa { transform: scale(1); }
+  .estacao.show .linha { opacity: 1; }
+  .estacao.show .card { opacity: 1; transform: translateY(-50%) translateX(0); }
+  @media (max-width: 640px) {
+    .estacao .lupa { width: 140px; height: 140px; }
+    .estacao .card, .estacao.lado-left .card, .estacao.lado-right .card { left: 5%; right: 5%; width: auto; top: auto; bottom: 4%; transform: translateY(12px); }
+    .estacao.show .card { transform: translateY(0); }
+    .estacao .linha { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .estacao .lupa { transition: opacity .3s ease; transform: none; opacity: 0; }
+    .estacao.show .lupa { opacity: 1; }
+    .estacao .card { transition: opacity .3s ease; }
+  }
+
+  .cta { text-align: center; padding: 150px 24px 140px; }
+  .cta h2 { font-family: 'Bodoni Moda', serif; font-weight: 400; font-size: clamp(38px, 5.5vw, 72px); line-height: 1.08; margin: 0 auto 22px; max-width: 860px; text-wrap: balance; }
+  .cta h2 em { color: var(--accent); font-style: italic; }
+  .cta p { font-size: 18px; color: var(--muted); margin: 0 0 40px; }
+  .cta .btn { font-size: 18px; padding: 18px 40px; }
+  footer { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; max-width: 1160px; margin: 0 auto; padding: 32px 24px 44px; border-top: 1px solid var(--border); font-size: 13px; color: var(--faint); }
+  @media (max-width: 640px) { nav { padding: 12px 16px; } }
+  @media (prefers-reduced-motion: reduce) { .fx { opacity: 1; transform: none; } }
+</style>
+</head>
+<body>
+<div id="pbar"></div>
+<nav>
+  <div class="logo">GIRO</div>
+  <a class="btn" href="#" style="font-size: 14px; padding: 9px 18px;">Ver a coleção</a>
+</nav>
+<header>
+  <div id="herocontent">
+    <div class="hero-txt">
+      <h1 class="fx">O look inteiro,<br>num <em>giro</em>.</h1>
+      <p class="hero-sub fx" style="--fxd: 120ms;">Role a página. A modelo gira e cada peça abre em detalhe: tecido, construção e caimento, como numa lupa.</p>
+      <a class="btn fx" style="--fxd: 240ms; font-size: 15px; padding: 13px 28px;" href="#">Ver a coleção</a>
+    </div>
+    <figure class="hero-look fx" style="--fxd: 200ms; margin: 0;">
+      <img src="media/frames/f001.webp" alt="Modelo de corpo inteiro vestindo o look completo do drop de estreia">
+      <figcaption><span>drop de estreia</span><span>6 peças</span></figcaption>
+    </figure>
+  </div>
+</header>
+<section id="scrubwrap" aria-label="Look 360°, seis peças em detalhe">
+  <div class="scrub-sticky">
+    <canvas id="scrubcanvas" aria-hidden="true"></canvas>
+    <div class="estacao" id="est0"></div>
+    <div class="estacao" id="est1"></div>
+    <div class="estacao" id="est2"></div>
+    <div class="estacao" id="est3"></div>
+    <div class="estacao" id="est4"></div>
+    <div class="estacao" id="est5"></div>
+  </div>
+</section>
+<section class="cta">
+  <h2 class="fx">Seis peças. <em>Um look.</em></h2>
+  <p class="fx" style="--fxd: 150ms;">Drop de estreia em pré-venda. Peças numeradas, produção única.</p>
+  <a class="btn fx" style="--fxd: 280ms;" href="#">Ver a coleção</a>
+</section>
+<footer>
+  <span class="logo" style="font-size: 18px;">GIRO</span>
+  <span>© 2026 GIRO · moda autoral</span>
+  <a href="#">@giro.moda</a>
+</footer>
+<script>
+(function () {
+  var vh = window.innerHeight;
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ===== Estações (config única do padrão — trocar aqui reconfigura a LP) ===== */
+  var ESTACOES = [
+    { t: 0.30, lupa: {x: 0.50, y: 0.16}, lado: 'right', tag: 'peça 01', titulo: 'Bucket Hat Eixo',      detalhe: 'Sarja de algodão 280 g/m² com aba estruturada. Costura dupla e ilhoses de ventilação em metal fosco.', preco: 'R$ 189' },
+    { t: 0.90, lupa: {x: 0.49, y: 0.19}, lado: 'left',  tag: 'peça 02', titulo: 'Óculos Tangente',      detalhe: 'Acetato reciclado polido à mão, lentes UV400 fumê. Dobradiça de mola em aço inox.', preco: 'R$ 349' },
+    { t: 1.50, lupa: {x: 0.47, y: 0.58}, lado: 'right', tag: 'peça 03', titulo: 'Cargo Órbita',          detalhe: 'Ripstop com elastano, seis bolsos com fole e ajuste de barra por cordão. Lavagem enzimática.', preco: 'R$ 299' },
+    { t: 3.30, lupa: {x: 0.49, y: 0.80}, lado: 'left',  tag: 'peça 04', titulo: 'Tênis Chunky Vetor',     detalhe: 'Cabedal em couro e mesh, entressola EVA de dupla densidade, solado com garra de 4 mm.', preco: 'R$ 449' },
+    { t: 3.90, lupa: {x: 0.53, y: 0.38}, lado: 'right', tag: 'peça 05', titulo: 'Bolsa Transversal Giro', detalhe: 'Nylon balístico com forro impermeável, fivela magnética e alça de 40 mm com regulagem rápida.', preco: 'R$ 249' },
+    { t: 4.50, lupa: {x: 0.50, y: 0.34}, lado: 'left',  tag: 'peça 06', titulo: 'Tee Rotação Oversized', detalhe: 'Malha penteada 220 g/m², silk à base d’água no peito. Ombro deslocado e barra reta.', preco: 'R$ 159' },
+  ];
+
+  /* ===== Monta lupa + card de cada estação a partir do array ===== */
+  var LUPA_ZOOM = 2.5, LUPA_D = 200;
+  ESTACOES.forEach(function (e, i) {
+    var est = document.getElementById('est' + i);
+    est.classList.add('lado-' + e.lado);
+    var canvas = document.createElement('canvas');
+    canvas.className = 'lupa';
+    canvas.width = LUPA_D * 2; canvas.height = LUPA_D * 2; // 2x p/ retina
+    var linha = document.createElement('div');
+    linha.className = 'linha';
+    var card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = '<div class="tag">' + e.tag + '</div><h3>' + e.titulo + '</h3><p>' + e.detalhe +
+      '</p><div class="rodape"><span class="preco">' + e.preco + '</span><a class="btn" href="#">ver produto</a></div>';
+    est.appendChild(canvas); est.appendChild(linha); est.appendChild(card);
+  });
+
+  function posicionaLupa(i) {
+    var e = ESTACOES[i], est = document.getElementById('est' + i);
+    // frame desenhado com altura 100vh, centrado horizontalmente (sticky no topo)
+    var fw = vh * (FRAME_W / FRAME_H), fleft = (window.innerWidth - fw) / 2;
+    var px = fleft + e.lupa.x * fw, py = e.lupa.y * vh;
+    var canvas = est.querySelector('.lupa');
+    // afasta a lupa da peça na direção do card
+    var dx = e.lado === 'right' ? 120 : -120 - LUPA_D;
+    canvas.style.left = (px + dx) + 'px';
+    canvas.style.top = Math.max(12, Math.min(vh - LUPA_D - 12, py - LUPA_D / 2)) + 'px';
+    var linha = est.querySelector('.linha');
+    var lx = px, ly = py;
+    var cx = px + (e.lado === 'right' ? 120 : -120), cy = parseFloat(canvas.style.top) + LUPA_D / 2;
+    var len = Math.hypot(cx - lx, cy - ly);
+    linha.style.left = lx + 'px'; linha.style.top = ly + 'px';
+    linha.style.width = len + 'px';
+    linha.style.transform = 'rotate(' + Math.atan2(cy - ly, cx - lx) + 'rad)';
+  }
+
+  function renderLupa(i) {
+    var e = ESTACOES[i], est = document.getElementById('est' + i);
+    var lc = est.querySelector('.lupa'), ctx = lc.getContext('2d');
+    var img = nearestLoaded(curF);
+    if (!img) return;
+    var side = Math.min(FRAME_W, FRAME_H) / LUPA_ZOOM;
+    var sx = Math.max(0, Math.min(FRAME_W - side, e.lupa.x * FRAME_W - side / 2));
+    var sy = Math.max(0, Math.min(FRAME_H - side, e.lupa.y * FRAME_H - side / 2));
+    ctx.clearRect(0, 0, lc.width, lc.height);
+    ctx.drawImage(img, sx, sy, side, side, 0, 0, lc.width, lc.height);
+  }
+
+  // Cada estação ocupa 1/6 do scroll: 40% girando até ESTACOES[i].t; nos 60% de leitura
+  // a modelo segue girando devagar (LEITURA_DRIFT) — nunca congela de verdade.
+  var GIRO_FRAC = 0.4, LEITURA_DRIFT = 0.12;
+  function mapScrollToTime(p) {
+    var n = ESTACOES.length;
+    var seg = Math.min(n - 1, Math.floor(p * n));
+    var local = p * n - seg; // 0..1 dentro da estação
+    var t0 = seg === 0 ? 0 : ESTACOES[seg - 1].t + LEITURA_DRIFT;
+    var t1 = ESTACOES[seg].t;
+    if (local < GIRO_FRAC) return t0 + (t1 - t0) * (local / GIRO_FRAC);
+    return t1 + LEITURA_DRIFT * ((local - GIRO_FRAC) / (1 - GIRO_FRAC));
+  }
+  function estacaoAtiva(p) {
+    if (p <= 0 || p >= 1) return -1;
+    var n = ESTACOES.length;
+    var seg = Math.min(n - 1, Math.floor(p * n));
+    var local = p * n - seg;
+    return local >= GIRO_FRAC ? seg : -1;
+  }
+
+  var wrap = document.getElementById('scrubwrap');
+
+  /* ===== Motor de sequência de imagens (sem <video>: zero latência de seek) ===== */
+  var FRAMES_N = 161, DURATION = 5.03, FRAME_W = 1280, FRAME_H = 720;
+  var frames = new Array(FRAMES_N), estAtiva = -1;
+  function frameSrc(i) { return 'media/frames/f' + ('00' + (i + 1)).slice(-3) + '.webp'; }
+  function nearestLoaded(fi) {
+    fi = Math.max(0, Math.min(FRAMES_N - 1, fi));
+    if (frames[fi]) return frames[fi];
+    for (var d = 1; d < FRAMES_N; d++) {
+      if (frames[fi - d]) return frames[fi - d];
+      if (frames[fi + d]) return frames[fi + d];
+    }
+    return null;
+  }
+
+  var canvas = document.getElementById('scrubcanvas');
+  var cctx = canvas.getContext('2d');
+  var dpr = Math.min(2, window.devicePixelRatio || 1);
+  function sizeCanvas() {
+    canvas.width = Math.round(window.innerWidth * dpr);
+    canvas.height = Math.round(vh * dpr);
+  }
+  function draw(fi) {
+    var img = nearestLoaded(fi);
+    if (!img) return;
+    cctx.fillStyle = '#fff';
+    cctx.fillRect(0, 0, canvas.width, canvas.height);
+    var h = canvas.height, w = h * (FRAME_W / FRAME_H), x = (canvas.width - w) / 2;
+    cctx.drawImage(img, x, 0, w, h);
+  }
+
+  var curF = -1, smoothF = 0, targetF = 0, animRaf = null;
+  function animStep() {
+    smoothF += (targetF - smoothF) * 0.2;
+    var fi = Math.round(smoothF);
+    if (fi !== curF) {
+      curF = fi;
+      draw(fi);
+      if (estAtiva >= 0) renderLupa(estAtiva); // lupa acompanha o giro lento da leitura
+    }
+    if (Math.abs(targetF - smoothF) < 0.4) { animRaf = null; return; }
+    animRaf = requestAnimationFrame(animStep);
+  }
+  function startAnim() { if (!animRaf) animRaf = requestAnimationFrame(animStep); }
+
+  function preload() {
+    var next = 0, inflight = 0, MAXC = 8;
+    function pump() {
+      while (inflight < MAXC && next < FRAMES_N) {
+        (function (i) {
+          inflight++;
+          var img = new Image();
+          img.onload = function () {
+            frames[i] = img; inflight--;
+            if (i === 0) { sizeCanvas(); draw(0); update(); }
+            pump();
+          };
+          img.onerror = function () {
+            inflight--;
+            if (i === 0) wrap.classList.add('disabled'); // sem frames: desativa a seção
+            pump();
+          };
+          img.src = frameSrc(i);
+        })(next++);
+      }
+    }
+    pump();
+  }
+
+  var pbar = document.getElementById('pbar');
+  var hero = document.getElementById('herocontent');
+  var fxEls = document.querySelectorAll('.fx');
+
+  function update() {
+    var y = window.scrollY;
+    var doc = document.documentElement;
+    var max = doc.scrollHeight - vh;
+    pbar.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
+    hero.style.transform = 'translateY(' + (y * 0.16) + 'px)';
+    hero.style.opacity = String(Math.max(0, 1 - y / (vh * 0.9)));
+    fxEls.forEach(function (el) {
+      if (el.classList.contains('on')) return;
+      var r = el.getBoundingClientRect();
+      if (r.top < vh * 0.88 && r.bottom > -vh * 0.2) el.classList.add('on');
+    });
+    if (!wrap.classList.contains('disabled')) {
+      var r = wrap.getBoundingClientRect();
+      var total = r.height - vh;
+      var p = Math.min(1, Math.max(0, total > 0 ? -r.top / total : 0));
+      if (!reducedMotion) {
+        targetF = mapScrollToTime(p) / DURATION * (FRAMES_N - 1);
+        startAnim();
+      }
+      var ativa = estacaoAtiva(p);
+      estAtiva = r.top <= 0 ? ativa : -1;
+      for (var i = 0; i < ESTACOES.length; i++) {
+        var est = document.getElementById('est' + i);
+        var on = i === ativa && r.top <= 0;
+        if (on && !est.classList.contains('show')) {
+          posicionaLupa(i);
+          renderLupa(i); // primeiro desenho; os seguintes vêm do listener de seeked
+        }
+        est.classList.toggle('show', on);
+      }
+    }
+  }
+  var rafPending = false;
+  function onScroll() {
+    if (!rafPending) { rafPending = true; requestAnimationFrame(function () { rafPending = false; update(); }); }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () {
+    vh = window.innerHeight;
+    sizeCanvas();
+    draw(curF < 0 ? 0 : curF);
+    if (estAtiva >= 0) {
+      posicionaLupa(estAtiva);
+      renderLupa(estAtiva);
+    }
+    onScroll();
+  });
+  preload();
+  update();
+  setTimeout(update, 300);
+  setTimeout(update, 1200);
+})();
+</script>
+</body>
+</html>

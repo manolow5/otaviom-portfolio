@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="noite">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ata Recorder — Seu conhecimento não devia morar em mil arquivos</title>
+<meta name="description" content="Grave reuniões, cole links de vídeo e transforme tudo em atas, resumos, mapas mentais e um chat que responde com fonte. 7 dias grátis, sem cartão.">
+<meta property="og:title" content="Ata Recorder — o fim do corredor do caos">
+<meta property="og:description" content="Notas soltas, pastas infinitas, vídeos de duas horas. Role a página e percorra o corredor — até tudo caber num único lugar.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://atarecorder.com">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ===== Temas (troque via <html data-theme="noite|papel|brasa">) ===== */
+  :root, [data-theme="noite"] {
+    --page: #0c0b09; --panel: #14110d; --panel2: rgba(255,255,255,.06);
+    --ink: #f2ede4; --muted: #b8afa1; --faint: #8d8476;
+    --accent: #e8a33d; --accent-ink: #14110d; --accent-border: rgba(232,163,61,.35);
+    --border: rgba(255,255,255,.08); --navbg: rgba(12,11,9,.72);
+    --phone-border: rgba(255,255,255,.14);
+    --hero-grad: radial-gradient(ellipse at 50% 90%, rgba(232,163,61,.16), transparent 55%);
+    --accent-glow: rgba(232,163,61,.3);
+  }
+  [data-theme="papel"] {
+    --page: #f4efe5; --panel: #fffdf8; --panel2: rgba(34,28,19,.07);
+    --ink: #221c13; --muted: #5f5748; --faint: #857b69;
+    --accent: #b0731a; --accent-ink: #fffdf8; --accent-border: rgba(176,115,26,.45);
+    --border: rgba(34,28,19,.14); --navbg: rgba(244,239,229,.8);
+    --phone-border: rgba(34,28,19,.2);
+    --hero-grad: radial-gradient(ellipse at 50% 90%, rgba(176,115,26,.14), transparent 55%);
+    --accent-glow: rgba(176,115,26,.3);
+  }
+  [data-theme="brasa"] {
+    --page: #0e0a09; --panel: #171010; --panel2: rgba(255,255,255,.06);
+    --ink: #f5eee9; --muted: #c0b2a9; --faint: #93857c;
+    --accent: #e06a3f; --accent-ink: #170f0c; --accent-border: rgba(224,106,63,.4);
+    --border: rgba(255,255,255,.08); --navbg: rgba(14,10,9,.72);
+    --phone-border: rgba(255,255,255,.14);
+    --hero-grad: radial-gradient(ellipse at 50% 90%, rgba(224,106,63,.16), transparent 55%);
+    --accent-glow: rgba(224,106,63,.3);
+  }
+
+  html, body { margin: 0; padding: 0; background: var(--page); color: var(--ink); font-family: 'Space Grotesk', sans-serif; scrollbar-color: #3a332a var(--page); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { filter: brightness(1.1); }
+  ::selection { background: var(--accent-border); }
+  button { font-family: 'Space Grotesk', sans-serif; }
+
+  @keyframes glowpulse { 0%, 100% { opacity: .5; } 50% { opacity: 1; } }
+  @keyframes hintdown { 0% { transform: translateY(0); opacity: .9; } 100% { transform: translateY(10px); opacity: 0; } }
+  @keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  @keyframes typingdot { 0%, 100% { opacity: .2; } 50% { opacity: 1; } }
+
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  .serif { font-family: 'Instrument Serif', serif; font-weight: 400; }
+
+  /* ===== Tom da narrativa (body[data-tone]) ===== */
+  body[data-tone="confiante"] .tone-drama { display: none; }
+  body[data-tone="dramatico"] .tone-conf { display: none; }
+
+  /* ===== Barra de progresso ===== */
+  #pbar { position: fixed; top: 0; left: 0; height: 2px; width: 0%; background: var(--accent); z-index: 90; }
+
+  /* ===== Nav ===== */
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 80; display: flex; align-items: center; justify-content: space-between; padding: 14px 28px; background: var(--navbg); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); }
+  .logo { font-family: 'Instrument Serif', serif; font-size: 26px; letter-spacing: .01em; color: var(--ink); }
+  .logo b { color: var(--accent); font-weight: 400; }
+  .nav-right { display: flex; align-items: center; gap: 16px; }
+  .tone-switch { display: flex; gap: 4px; background: var(--panel2); border-radius: 999px; padding: 4px; }
+  .tone-switch button { border: none; cursor: pointer; border-radius: 999px; padding: 6px 14px; font-size: 13px; font-weight: 600; background: transparent; color: var(--faint); transition: all .25s ease; }
+  .tone-switch button.active { background: var(--accent); color: var(--accent-ink); }
+  .btn { display: inline-block; background: var(--accent); color: var(--accent-ink); font-weight: 600; border-radius: 999px; transition: filter .2s ease; }
+  .btn:hover { filter: brightness(1.08); }
+
+  /* ===== Reveal on scroll ===== */
+  .fx { opacity: 0; transform: translateY(24px); }
+  .fx.on { opacity: 1; transform: none; transition: opacity .9s cubic-bezier(.22,.61,.36,1) var(--fxd, 0ms), transform .9s cubic-bezier(.22,.61,.36,1) var(--fxd, 0ms); }
+
+  /* ===== Hero ===== */
+  header { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+  .hero-grad { position: absolute; inset: 0; background: var(--hero-grad); }
+  #herocontent { position: relative; z-index: 2; text-align: center; max-width: 940px; padding: 120px 24px 80px; }
+  .badge { display: inline-flex; align-items: center; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent-border); border-radius: 999px; padding: 8px 16px; }
+  .badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: glowpulse 2.2s infinite; }
+  header h1 { font-family: 'Instrument Serif', serif; font-weight: 400; font-size: clamp(42px, 6.6vw, 84px); line-height: 1.05; margin: 32px 0 24px; color: var(--ink); }
+  header h1 em, .accent { color: var(--accent); }
+  .hero-sub { font-size: clamp(17px, 2vw, 21px); line-height: 1.6; color: var(--muted); max-width: 660px; margin: 0 auto 40px; }
+  .hero-ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; align-items: center; }
+  .hero-note { display: inline-flex; align-items: center; font-size: 14px; color: var(--faint); }
+  .scroll-hint { position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--faint); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-family: 'IBM Plex Mono', monospace; }
+  .scroll-hint span { display: block; width: 1px; height: 26px; background: var(--accent); animation: hintdown 1.6s infinite; }
+
+  /* ===== Corredor: vídeo com scrub por scroll ===== */
+  #scrubwrap { position: relative; height: 640vh; }
+  #scrubwrap.disabled { height: 0; }
+  .scrub-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #0c0b09; }
+  #scrubvid { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .scrub-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(12,11,9,.45) 0%, transparent 30%, transparent 62%, rgba(12,11,9,.78) 100%); }
+  .cap { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; position: absolute; bottom: 9%; max-width: 480px; z-index: 3; }
+  .cap.left { left: 5%; }
+  .cap.right { right: 5%; text-align: right; }
+  .cap.center { left: 50%; bottom: 10%; transform: translate(-50%, 24px); max-width: 620px; width: 90%; text-align: center; }
+  .cap.show { opacity: 1; transform: translateY(0); }
+  .cap.center.show { transform: translate(-50%, 0); }
+  .cap-tag { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: #e8a33d; margin-bottom: 12px; text-shadow: 0 1px 14px rgba(0,0,0,.8); }
+  .cap h2 { font-family: 'Instrument Serif', serif; font-weight: 400; font-size: clamp(30px, 3.8vw, 48px); line-height: 1.1; margin: 0 0 12px; color: #f2ede4; text-shadow: 0 2px 28px rgba(0,0,0,.7); }
+  .cap p { font-size: 16px; line-height: 1.6; color: #cfc6b8; margin: 0; text-shadow: 0 1px 18px rgba(0,0,0,.7); }
+  .cap.center h2 { font-size: clamp(32px, 4.4vw, 56px); line-height: 1.08; }
+  .cap.center p { font-size: 17px; }
+  .cap h2 em { color: #e8a33d; }
+
+  /* ===== Mini tour ===== */
+  .tour { position: relative; max-width: 1160px; margin: 0 auto; padding: 150px 24px 120px; }
+  .tour-head { text-align: center; max-width: 760px; margin: 0 auto 64px; }
+  .kicker { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--accent); margin-bottom: 18px; }
+  .tour-head h2 { font-family: 'Instrument Serif', serif; font-weight: 400; font-size: clamp(34px, 4.6vw, 58px); line-height: 1.08; margin: 0 0 18px; color: var(--ink); }
+  .tour-head p { font-size: 17px; line-height: 1.7; color: var(--muted); margin: 0; }
+  .tour-body { display: flex; flex-wrap: wrap; gap: 56px; align-items: center; justify-content: center; }
+
+  /* Celular */
+  .phone-outer { flex: 0 0 auto; }
+  .phone { width: 330px; border: 1px solid var(--phone-border); border-radius: 46px; padding: 10px; background: #050403; box-shadow: 0 40px 120px rgba(0,0,0,.6); animation: floaty 6s ease-in-out infinite; }
+  .phone-screen { position: relative; border-radius: 38px; overflow: hidden; background: #14110d; height: 620px; display: flex; flex-direction: column; }
+  .phone-notch { position: absolute; top: 10px; left: 50%; transform: translateX(-50%); width: 110px; height: 26px; border-radius: 999px; background: #050403; z-index: 5; }
+  .phone-top { display: flex; align-items: center; justify-content: space-between; padding: 48px 20px 12px; border-bottom: 1px solid rgba(255,255,255,.07); }
+  .phone-top .plogo { font-family: 'Instrument Serif', serif; font-size: 19px; color: #f2ede4; }
+  .phone-top .plogo b { color: #e8a33d; font-weight: 400; }
+  .phone-top .ptag { font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #8d8476; letter-spacing: .12em; }
+  .pane { display: none; }
+  .pane.active { display: flex; }
+
+  .pane-transcript { flex: 1; padding: 18px 20px; flex-direction: column; gap: 14px; overflow: hidden; }
+  .tr-row { display: flex; gap: 10px; }
+  .tr-avatar { flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%; font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+  .tr-meta { font-size: 11px; color: #8d8476; font-family: 'IBM Plex Mono', monospace; }
+  .tr-text { font-size: 13px; color: #ded5c6; line-height: 1.5; }
+  .tr-live { margin-top: auto; display: flex; align-items: center; gap: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #e8a33d; }
+  .tr-live .dot { width: 6px; height: 6px; border-radius: 50%; background: #e8a33d; animation: glowpulse 1.6s infinite; }
+
+  .pane-docs { flex: 1; padding: 18px 20px; flex-direction: column; gap: 10px; }
+  .doc-card { background: #1c1712; border: 1px solid rgba(255,255,255,.07); border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; }
+  .doc-card .dt { font-size: 13px; color: #f2ede4; font-weight: 500; }
+  .doc-card .dd { font-size: 11px; color: #8d8476; }
+  .doc-badge { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #96c9a2; border: 1px solid rgba(140,200,150,.35); border-radius: 999px; padding: 3px 8px; }
+  .docs-note { margin-top: auto; font-size: 11px; color: #8d8476; text-align: center; }
+
+  .pane-map { flex: 1; padding: 18px 14px; align-items: center; justify-content: center; }
+  .pane-map svg { width: 100%; height: 100%; }
+
+  .pane-chat { flex: 1; padding: 18px 20px; flex-direction: column; gap: 12px; }
+  .msg-user { align-self: flex-end; max-width: 85%; background: rgba(232,163,61,.16); border: 1px solid rgba(232,163,61,.3); border-radius: 14px 14px 4px 14px; padding: 10px 14px; font-size: 13px; color: #f2ede4; line-height: 1.5; }
+  .msg-bot { align-self: flex-start; max-width: 90%; background: #1c1712; border: 1px solid rgba(255,255,255,.07); border-radius: 14px 14px 14px 4px; padding: 10px 14px; font-size: 13px; color: #ded5c6; line-height: 1.55; }
+  .msg-src { margin-top: 8px; display: inline-flex; gap: 6px; }
+  .msg-src span { font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: #e8a33d; border: 1px solid rgba(232,163,61,.35); border-radius: 999px; padding: 3px 8px; }
+  .typing { align-self: flex-start; display: flex; gap: 4px; padding: 10px 14px; }
+  .typing span { width: 6px; height: 6px; border-radius: 50%; background: #8d8476; animation: typingdot 1s infinite; }
+  .typing span:nth-child(2) { animation-delay: .2s; }
+  .typing span:nth-child(3) { animation-delay: .4s; }
+  .chat-input { margin-top: auto; border: 1px solid rgba(255,255,255,.1); border-radius: 999px; padding: 10px 16px; font-size: 12px; color: #8d8476; }
+
+  /* Abas do tour */
+  .tour-tabs { flex: 1 1 360px; min-width: 300px; max-width: 460px; display: flex; flex-direction: column; gap: 12px; }
+  .tour-tabs button { text-align: left; cursor: pointer; border-radius: 16px; padding: 16px 20px; background: transparent; border: 1px solid var(--border); color: var(--muted); transition: all .3s ease; }
+  .tour-tabs button.active { background: var(--panel); border-color: var(--accent-border); color: var(--ink); box-shadow: 0 16px 50px rgba(0,0,0,.25); }
+  .tour-tabs .tnum { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: .14em; opacity: .7; }
+  .tour-tabs .ttitle { display: block; font-size: 17px; font-weight: 600; margin: 4px 0 2px; }
+  .tour-tabs .tdesc { display: block; font-size: 13px; opacity: .75; line-height: 1.5; }
+
+  /* ===== CTA final ===== */
+  .cta { position: relative; text-align: center; padding: 150px 24px 140px; overflow: hidden; }
+  .cta-grad { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 100%, var(--accent-glow), transparent 60%); opacity: .55; }
+  .cta-inner { position: relative; z-index: 2; }
+  .cta h2 { font-family: 'Instrument Serif', serif; font-weight: 400; font-size: clamp(38px, 5.5vw, 72px); line-height: 1.08; margin: 0 auto 22px; max-width: 860px; color: var(--ink); }
+  .cta h2 em { color: var(--accent); }
+  .cta p { font-size: 18px; color: var(--muted); margin: 0 0 40px; }
+  .cta .btn { font-size: 18px; padding: 18px 40px; box-shadow: 0 12px 50px var(--accent-glow); }
+
+  /* ===== Footer ===== */
+  footer { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; max-width: 1160px; margin: 0 auto; padding: 32px 24px 44px; border-top: 1px solid var(--border); font-size: 13px; color: var(--faint); }
+  footer .flogo { font-family: 'Instrument Serif', serif; font-size: 20px; color: var(--ink); }
+  footer .flogo b { color: var(--accent); font-weight: 400; }
+  footer a { font-size: 13px; }
+
+  /* ===== Mobile ===== */
+  @media (max-width: 640px) {
+    nav { padding: 12px 16px; }
+    .tone-switch button { padding: 5px 10px; font-size: 12px; }
+    .nav-right .btn { font-size: 13px; padding: 8px 14px; }
+    .cap.left, .cap.right { left: 6%; right: 6%; max-width: none; text-align: left; }
+    .tour { padding: 100px 20px 80px; }
+    .cta { padding: 100px 20px 100px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .phone, .badge .dot, .scroll-hint span { animation: none; }
+  }
+</style>
+</head>
+<body data-tone="confiante">
+
+<div id="pbar"></div>
+
+<nav>
+  <div class="logo">Ata<b>.</b></div>
+  <div class="nav-right">
+    <div class="tone-switch" role="group" aria-label="Tom da narrativa">
+      <button type="button" id="btn-conf" class="active">Confiante</button>
+      <button type="button" id="btn-drama">Dramático</button>
+    </div>
+    <a class="btn" href="https://dashboard.atarecorder.com" style="font-size: 14px; padding: 9px 18px;">Começar grátis</a>
+  </div>
+</nav>
+
+<header>
+  <div class="hero-grad"></div>
+  <div id="herocontent">
+    <div class="badge fx">
+      <span class="dot"></span>
+      Ata Recorder · o corredor do caos
+    </div>
+    <div class="tone-conf">
+      <h1 class="fx" style="--fxd: 120ms;">Seu conhecimento não devia<br>morar em <em>mil arquivos</em>.</h1>
+      <p class="hero-sub fx" style="--fxd: 240ms;">Notas soltas, pastas infinitas, copia-e-cola na IA, vídeos de duas horas. Role a página e percorra o corredor — até tudo caber num único lugar.</p>
+    </div>
+    <div class="tone-drama">
+      <h1 class="fx" style="--fxd: 120ms;">Bem-vindo ao corredor onde<br>suas anotações <em>vão se perder</em>.</h1>
+      <p class="hero-sub fx" style="--fxd: 240ms;">Milhares de arquivos. Nenhuma resposta. Alguém precisa arrumar essa bagunça — e hoje esse alguém é você. Role.</p>
+    </div>
+    <div class="hero-ctas fx" style="--fxd: 360ms;">
+      <a class="btn" href="https://dashboard.atarecorder.com" style="font-size: 16px; padding: 15px 30px;">Começar trial · 7 dias grátis</a>
+      <span class="hero-note">sem cartão · cancela quando quiser</span>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    entre no corredor
+    <span></span>
+  </div>
+</header>
+
+<section id="scrubwrap" aria-label="Corredor do caos — história em 6 cenas">
+  <div class="scrub-sticky">
+    <video id="scrubvid" src="media/corredor-scrub.mp4" muted playsinline preload="auto"></video>
+    <div class="scrub-shade"></div>
+
+
+    <div class="cap left" id="cap0">
+      <div class="cap-tag">Notas soltas</div>
+      <div class="tone-conf">
+        <h2>Anotar tudo à mão não escala.</h2>
+        <p>Cada reunião, aula e vídeo vira um bloco de notas diferente. Nenhum deles conversa entre si.</p>
+      </div>
+      <div class="tone-drama">
+        <h2>Mil notas. Zero respostas.</h2>
+        <p>Você anotou tudo. E não encontra nada.</p>
+      </div>
+    </div>
+
+    <div class="cap right" id="cap1">
+      <div class="cap-tag">Copia e cola</div>
+      <div class="tone-conf">
+        <h2>Copiar texto pra IA é loteria.</h2>
+        <p>Contexto pela metade, resultado incerto. E amanhã, tudo de novo.</p>
+      </div>
+      <div class="tone-drama">
+        <h2>Cola na IA. Reza.</h2>
+        <p>Sem contexto, ela inventa. E você confere linha por linha.</p>
+      </div>
+    </div>
+
+    <div class="cap left" id="cap2" style="max-width: 500px;">
+      <div class="cap-tag">As pastas</div>
+      <div class="tone-conf">
+        <h2 style="font-size: clamp(28px, 3.4vw, 44px); line-height: 1.12;">"resumo-final-v3-AGORA-VAI.docx"</h2>
+        <p>Milhares de arquivos nomeados pra organizar — e você ainda abre um por um pra saber o que tem dentro.</p>
+      </div>
+      <div class="tone-drama">
+        <h2 style="font-size: clamp(28px, 3.4vw, 44px); line-height: 1.12;">Você não organiza. Você enterra.</h2>
+        <p>Achar qualquer coisa aqui custa uma tarde. Sempre.</p>
+      </div>
+    </div>
+
+    <div class="cap right" id="cap3" style="max-width: 500px;">
+      <div class="cap-tag">Os vídeos</div>
+      <div class="tone-conf">
+        <h2>Duas horas de vídeo.<br>Uma pergunta.</h2>
+        <p>Em vez de assistir, transcreva e pergunte direto. O vídeo inteiro vai pra caixa.</p>
+      </div>
+      <div class="tone-drama">
+        <h2>A aula tem 2h14.<br>Sua dúvida, 10 segundos.</h2>
+        <p>Transcreva o vídeo e pergunte. As TVs vão pra caixa.</p>
+      </div>
+    </div>
+
+    <div class="cap left" id="cap4">
+      <div class="cap-tag">Encaixotando</div>
+      <div class="tone-conf">
+        <h2>Tudo que era bagunça, empacotado.</h2>
+        <p>Notas, arquivos, vídeos, resumos — cada coisa na sua caixa.</p>
+      </div>
+      <div class="tone-drama">
+        <h2>O caos, finalmente contido.</h2>
+        <p>Caixa por caixa, o corredor respira.</p>
+      </div>
+    </div>
+
+    <div class="cap center" id="cap5">
+      <div class="cap-tag">O fim do corredor</div>
+      <div class="tone-conf">
+        <h2>E tudo cabe <em>aqui dentro</em>.</h2>
+        <p>As caixas entram no celular. Um lugar só — com busca que responde.</p>
+      </div>
+      <div class="tone-drama">
+        <h2>Um corredor inteiro. <em>Um bolso.</em></h2>
+        <p>Tudo guardado, organizado e — pela primeira vez — encontrável.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tour">
+  <div class="tour-head">
+    <div class="kicker fx">Dentro do celular</div>
+    <div class="tone-conf">
+      <h2 class="fx" style="--fxd: 100ms;">Tudo aquilo, aqui dentro.</h2>
+      <p class="fx" style="--fxd: 200ms;">Grave uma reunião ou cole um link de vídeo. A Ata transcreve, gera os documentos, desenha o mapa mental e responde perguntas sobre tudo que você guardou.</p>
+    </div>
+    <div class="tone-drama">
+      <h2 class="fx" style="--fxd: 100ms;">O corredor inteiro, no seu bolso.</h2>
+      <p class="fx" style="--fxd: 200ms;">Nada de pastas. Nada de copia-e-cola. Você pergunta; ele responde com o que estava nas caixas.</p>
+    </div>
+  </div>
+
+  <div class="tour-body">
+    <div class="phone-outer fx" style="--fxd: 120ms;">
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-notch"></div>
+          <div class="phone-top">
+            <span class="plogo">Ata<b>.</b></span>
+            <span class="ptag">PLANEJAMENTO Q2</span>
+          </div>
+
+          <div class="pane pane-transcript active" id="pane0">
+            <div class="tr-row"><span class="tr-avatar" style="background: rgba(232,163,61,.18); color: #e8a33d;">RS</span><div><div class="tr-meta">Rafael · 00:42:17</div><div class="tr-text">A gente fecha o orçamento de mídia em 40 mil e revisa em maio.</div></div></div>
+            <div class="tr-row"><span class="tr-avatar" style="background: rgba(120,160,220,.15); color: #9db8e0;">AL</span><div><div class="tr-meta">Ana · 00:42:31</div><div class="tr-text">Fechado. Eu assumo o relatório de performance até sexta.</div></div></div>
+            <div class="tr-row"><span class="tr-avatar" style="background: rgba(140,200,150,.14); color: #96c9a2;">JM</span><div><div class="tr-meta">José · 00:43:02</div><div class="tr-text">Então o lançamento fica pra semana do dia 18, certo?</div></div></div>
+            <div class="tr-live"><span class="dot"></span>transcrevendo em tempo real…</div>
+          </div>
+
+          <div class="pane pane-docs" id="pane1">
+            <div class="doc-card"><div><div class="dt">Ata da reunião</div><div class="dd">gerada · 6 min após a chamada</div></div><span class="doc-badge">PRONTO</span></div>
+            <div class="doc-card"><div><div class="dt">Resumo executivo</div><div class="dd">1 página · pronto pra enviar</div></div><span class="doc-badge">PRONTO</span></div>
+            <div class="doc-card"><div><div class="dt">Decisões &amp; tarefas</div><div class="dd">3 decisões · 5 tarefas com dono</div></div><span class="doc-badge">PRONTO</span></div>
+            <div class="doc-card"><div><div class="dt">Aula: Cálculo II (YouTube)</div><div class="dd">2h14 transcritas · resumo por tópico</div></div><span class="doc-badge">PRONTO</span></div>
+            <div class="docs-note">nenhuma pasta foi criada na produção destes documentos</div>
+          </div>
+
+          <div class="pane pane-map" id="pane2">
+            <svg viewBox="0 0 300 380">
+              <path d="M150 190 L70 90" stroke="rgba(232,163,61,.5)" stroke-width="1.5" fill="none"></path>
+              <path d="M150 190 L230 90" stroke="rgba(232,163,61,.5)" stroke-width="1.5" fill="none"></path>
+              <path d="M150 190 L60 250" stroke="rgba(232,163,61,.5)" stroke-width="1.5" fill="none"></path>
+              <path d="M150 190 L240 250" stroke="rgba(232,163,61,.5)" stroke-width="1.5" fill="none"></path>
+              <path d="M150 190 L150 320" stroke="rgba(232,163,61,.5)" stroke-width="1.5" fill="none"></path>
+              <ellipse cx="150" cy="190" rx="62" ry="26" fill="rgba(232,163,61,.16)" stroke="#e8a33d"></ellipse>
+              <text x="150" y="195" text-anchor="middle" fill="#f2ede4" font-size="13" font-family="Space Grotesk">Planejamento Q2</text>
+              <ellipse cx="70" cy="90" rx="48" ry="20" fill="#1c1712" stroke="rgba(255,255,255,.2)"></ellipse>
+              <text x="70" y="94" text-anchor="middle" fill="#ded5c6" font-size="11" font-family="Space Grotesk">Orçamento</text>
+              <ellipse cx="230" cy="90" rx="48" ry="20" fill="#1c1712" stroke="rgba(255,255,255,.2)"></ellipse>
+              <text x="230" y="94" text-anchor="middle" fill="#ded5c6" font-size="11" font-family="Space Grotesk">Lançamento</text>
+              <ellipse cx="60" cy="250" rx="44" ry="20" fill="#1c1712" stroke="rgba(255,255,255,.2)"></ellipse>
+              <text x="60" y="254" text-anchor="middle" fill="#ded5c6" font-size="11" font-family="Space Grotesk">Equipe</text>
+              <ellipse cx="240" cy="250" rx="44" ry="20" fill="#1c1712" stroke="rgba(255,255,255,.2)"></ellipse>
+              <text x="240" y="254" text-anchor="middle" fill="#ded5c6" font-size="11" font-family="Space Grotesk">Métricas</text>
+              <ellipse cx="150" cy="320" rx="52" ry="20" fill="#1c1712" stroke="rgba(255,255,255,.2)"></ellipse>
+              <text x="150" y="324" text-anchor="middle" fill="#ded5c6" font-size="11" font-family="Space Grotesk">Próximos passos</text>
+            </svg>
+          </div>
+
+          <div class="pane pane-chat" id="pane3">
+            <div class="msg-user">Quanto ficou o orçamento de mídia e quem revisa?</div>
+            <div class="msg-bot">R$ 40 mil, com revisão em maio. A Ana assumiu o relatório de performance até sexta.<div class="msg-src"><span>Planejamento Q2 · 42:17</span></div></div>
+            <div class="msg-user">E o que a aula de Cálculo falou sobre integrais por partes?</div>
+            <div class="typing"><span></span><span></span><span></span></div>
+            <div class="chat-input">Pergunte qualquer coisa sobre suas caixas…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tour-tabs fx" style="--fxd: 200ms;">
+      <button type="button" class="active" data-tab="0"><span class="tnum">01</span><span class="ttitle">Transcrição ao vivo</span><span class="tdesc">Reunião, áudio ou link do YouTube — vira texto com quem disse o quê.</span></button>
+      <button type="button" data-tab="1"><span class="tnum">02</span><span class="ttitle">Documentos prontos</span><span class="tdesc">Ata, resumo, decisões e tarefas — sem criar uma pasta sequer.</span></button>
+      <button type="button" data-tab="2"><span class="tnum">03</span><span class="ttitle">Mapa mental</span><span class="tdesc">A conversa inteira desenhada — pra entender em 10 segundos.</span></button>
+      <button type="button" data-tab="3"><span class="tnum">04</span><span class="ttitle">Chat com tudo</span><span class="tdesc">Pergunte e receba a resposta com a fonte — nada de abrir arquivo por arquivo.</span></button>
+    </div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="cta-grad"></div>
+  <div class="cta-inner">
+    <div class="tone-conf">
+      <h2 class="fx">Saia do corredor.</h2>
+      <p class="fx" style="--fxd: 150ms;">7 dias grátis. Sem cartão. Suas próximas reuniões e vídeos já nascem organizados.</p>
+    </div>
+    <div class="tone-drama">
+      <h2 class="fx">O caos não se arruma sozinho.<br><em>Mas dá pra nunca mais criá-lo.</em></h2>
+      <p class="fx" style="--fxd: 150ms;">7 dias grátis. Sem cartão. O corredor termina aqui.</p>
+    </div>
+    <a class="btn fx" style="--fxd: 280ms;" href="https://dashboard.atarecorder.com">Começar trial · 7 dias grátis</a>
+  </div>
+</section>
+
+<footer>
+  <span class="flogo">Ata<b>.</b></span>
+  <span>© 2026 Ata Recorder LLC · Smart meeting transcription</span>
+  <a href="https://atarecorder.com">atarecorder.com</a>
+</footer>
+
+<script>
+(function () {
+  var vh = window.innerHeight;
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ===== Tom da narrativa ===== */
+  var btnConf = document.getElementById('btn-conf');
+  var btnDrama = document.getElementById('btn-drama');
+  function setTone(tone) {
+    document.body.setAttribute('data-tone', tone);
+    btnConf.classList.toggle('active', tone === 'confiante');
+    btnDrama.classList.toggle('active', tone === 'dramatico');
+  }
+  btnConf.addEventListener('click', function () { setTone('confiante'); });
+  btnDrama.addEventListener('click', function () { setTone('dramatico'); });
+
+  /* ===== Abas do tour ===== */
+  var tabButtons = document.querySelectorAll('.tour-tabs button');
+  tabButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      tabButtons.forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      for (var i = 0; i < 4; i++) {
+        document.getElementById('pane' + i).classList.toggle('active', String(i) === btn.dataset.tab);
+      }
+    });
+  });
+
+  /* ===== Vídeo com scrub: fallback se falhar ===== */
+  var wrap = document.getElementById('scrubwrap');
+  var vid = document.getElementById('scrubvid');
+  vid.muted = true;
+  try { vid.pause(); } catch (e) {}
+  vid.addEventListener('error', function () { wrap.classList.add('disabled'); });
+  if (vid.error) wrap.classList.add('disabled');
+
+  var seekBusy = false, smoothT = 0, targetT = 0, scrubRaf = null;
+  vid.addEventListener('seeked', function () { seekBusy = false; });
+
+  function scrubStep() {
+    var cur = smoothT || vid.currentTime || 0;
+    // suaviza em direção ao alvo pra manter o scrub fluido mesmo com seeks lentos
+    var next = cur + (targetT - cur) * 0.22;
+    smoothT = next;
+    var diff = Math.abs(next - (vid.currentTime || 0));
+    // nunca emite um novo seek enquanto o anterior ainda decodifica
+    if (!seekBusy && diff > 0.034 && vid.readyState > 0) {
+      seekBusy = true;
+      try { vid.currentTime = next; } catch (e) { seekBusy = false; }
+    }
+    if (Math.abs(targetT - next) < 0.01 && diff < 0.034) { scrubRaf = null; return; }
+    scrubRaf = requestAnimationFrame(scrubStep);
+  }
+  function startScrub() { if (!scrubRaf) scrubRaf = requestAnimationFrame(scrubStep); }
+
+  /* ===== Loop de scroll ===== */
+  var N = 6;
+  var pbar = document.getElementById('pbar');
+  var hero = document.getElementById('herocontent');
+  var fxEls = document.querySelectorAll('.fx');
+
+  function update() {
+    var y = window.scrollY;
+    var doc = document.documentElement;
+
+    var max = doc.scrollHeight - vh;
+    pbar.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
+
+    hero.style.transform = 'translateY(' + (y * 0.16) + 'px)';
+    hero.style.opacity = String(Math.max(0, 1 - y / (vh * 0.9)));
+
+    fxEls.forEach(function (el) {
+      if (el.classList.contains('on')) return;
+      var r = el.getBoundingClientRect();
+      if (r.top < vh * 0.88 && r.bottom > -vh * 0.2) el.classList.add('on');
+    });
+
+    if (!wrap.classList.contains('disabled')) {
+      var r = wrap.getBoundingClientRect();
+      var total = r.height - vh;
+      var p = Math.min(1, Math.max(0, total > 0 ? -r.top / total : 0));
+      if (!reducedMotion && vid.duration) {
+        targetT = p * Math.max(0, vid.duration - 0.1);
+        startScrub();
+      }
+      var cur = Math.min(N - 1, Math.floor(p * N));
+      for (var i = 0; i < N; i++) {
+        var c = document.getElementById('cap' + i);
+        c.classList.toggle('show', i === cur && r.top <= 0 && p < 1.001);
+      }
+    }
+  }
+
+  var rafPending = false;
+  function onScroll() {
+    if (!rafPending) { rafPending = true; requestAnimationFrame(function () { rafPending = false; update(); }); }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () { vh = window.innerHeight; onScroll(); });
+
+  update();
+  setTimeout(update, 300);
+  setTimeout(update, 1200);
+})();
+</script>
+</body>
+</html>

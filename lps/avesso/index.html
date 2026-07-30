@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AVESSO — streetwear</title>
+<meta name="description" content="Drop 04 do AVESSO: atravesse o backstage em primeira pessoa. As peças aparecem quando a luz acende.">
+<meta property="og:title" content="AVESSO — vestir pelo lado de dentro">
+<meta property="og:description" content="Backstage, spots e o drop escondido entre as araras. Role.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --page: #050505; --ink: #f4f4f4; --muted: #9a9a9a; --faint: #6a6a6a;
+    --acid: #c8ff00; --border: rgba(255,255,255,.12); --navbg: rgba(5,5,5,.8);
+  }
+  html, body { margin: 0; padding: 0; background: var(--page); color: var(--ink); font-family: 'Archivo', sans-serif; scrollbar-color: #333 var(--page); }
+  a { color: var(--acid); text-decoration: none; }
+  ::selection { background: var(--acid); color: #050505; }
+  .mono { font-family: 'Space Mono', monospace; }
+
+  @keyframes hintdown { 0% { transform: translateY(0); opacity: .9; } 100% { transform: translateY(10px); opacity: 0; } }
+  @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  #pbar { position: fixed; top: 0; left: 0; height: 3px; width: 0%; background: var(--acid); z-index: 90; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 80; display: flex; align-items: center; justify-content: space-between; padding: 14px 24px; background: var(--navbg); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  .logo { font-family: 'Archivo Black', sans-serif; font-size: 22px; letter-spacing: .06em; }
+  .logo b { color: var(--acid); font-weight: 400; }
+  .btn { display: inline-block; background: var(--ink); color: #050505; font-family: 'Space Mono', monospace; font-weight: 700; font-size: 13px; letter-spacing: .04em; padding: 11px 20px; border-radius: 0; transition: all .2s ease; }
+  .btn:hover { background: var(--acid); }
+
+  .fx { opacity: 0; transform: translateY(24px); }
+  .fx.on { opacity: 1; transform: none; transition: opacity .8s cubic-bezier(.22,.61,.36,1) var(--fxd, 0ms), transform .8s cubic-bezier(.22,.61,.36,1) var(--fxd, 0ms); }
+
+  /* ===== Hero ===== */
+  header { position: relative; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; overflow: hidden; }
+  #herocontent { position: relative; z-index: 2; padding: 100px 24px 40px; text-align: center; }
+  .drop-tag { display: inline-block; font-family: 'Space Mono', monospace; font-size: 12px; letter-spacing: .2em; border: 1px solid var(--acid); color: var(--acid); padding: 7px 14px; }
+  header h1 { font-family: 'Archivo Black', sans-serif; font-size: clamp(64px, 14vw, 220px); line-height: .88; margin: 26px 0 20px; letter-spacing: .01em; text-transform: uppercase; }
+  header h1 .out { color: transparent; -webkit-text-stroke: 2px var(--ink); }
+  .hero-sub { font-size: clamp(15px, 1.8vw, 18px); line-height: 1.6; color: var(--muted); max-width: 520px; margin: 0 auto 36px; }
+  .hero-ctas { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--border); }
+  .btn.ghost:hover { border-color: var(--acid); color: var(--acid); }
+
+  .marquee { position: relative; z-index: 2; overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 12px 0; margin-top: auto; }
+  .marquee-track { display: flex; gap: 0; width: max-content; animation: marquee 22s linear infinite; }
+  .marquee span { font-family: 'Space Mono', monospace; font-size: 13px; letter-spacing: .22em; text-transform: uppercase; color: var(--faint); white-space: nowrap; padding: 0 26px; }
+  .marquee span b { color: var(--acid); font-weight: 400; }
+
+  .scroll-hint { position: absolute; bottom: 74px; left: 50%; transform: translateX(-50%); z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--faint); font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: .26em; text-transform: uppercase; }
+  .scroll-hint span { display: block; width: 1px; height: 26px; background: var(--acid); animation: hintdown 1.5s infinite; }
+
+  /* ===== Backstage (scrub) — legendas gigantes ===== */
+  #scrubwrap { position: relative; height: 640vh; }
+  #scrubwrap.disabled { height: 0; }
+  .scrub-sticky { position: sticky; top: 0; height: 100vh; overflow: hidden; background: #050505; }
+  #scrubvid { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: contrast(1.06); }
+  .scrub-shade { position: absolute; inset: 0; background: linear-gradient(180deg, rgba(5,5,5,.55) 0%, transparent 35%, transparent 62%, rgba(5,5,5,.8) 100%); }
+
+  .cap { opacity: 0; transform: translateY(30px); transition: opacity .5s ease, transform .5s ease; position: absolute; left: 0; right: 0; bottom: 8%; z-index: 3; text-align: center; padding: 0 16px; }
+  .cap.show { opacity: 1; transform: translateY(0); }
+  .cap h2 { font-family: 'Archivo Black', sans-serif; font-size: clamp(40px, 8.4vw, 130px); line-height: .92; margin: 0 0 14px; text-transform: uppercase; letter-spacing: .01em; color: var(--ink); text-shadow: 0 4px 40px rgba(0,0,0,.8); }
+  .cap h2 .acid { color: var(--acid); }
+  .cap h2 .out { color: transparent; -webkit-text-stroke: 2px var(--ink); }
+  .cap p { font-family: 'Space Mono', monospace; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; color: #cfcfcf; margin: 0 auto; max-width: 560px; text-shadow: 0 2px 20px rgba(0,0,0,.8); }
+
+  /* ===== Lookbook grid ===== */
+  .look { position: relative; max-width: 1160px; margin: 0 auto; padding: 130px 24px 110px; }
+  .look-head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 46px; }
+  .look-head h2 { font-family: 'Archivo Black', sans-serif; font-size: clamp(34px, 5.4vw, 72px); line-height: .95; margin: 0; text-transform: uppercase; }
+  .look-head h2 b { color: var(--acid); font-weight: 400; }
+  .look-head .mono { font-size: 12px; letter-spacing: .2em; color: var(--faint); text-transform: uppercase; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--border); border: 1px solid var(--border); }
+  .piece { background: #0b0b0b; padding: 26px 22px 22px; display: flex; flex-direction: column; gap: 40px; min-height: 220px; transition: all .2s ease; cursor: pointer; }
+  .piece:hover { background: var(--acid); color: #050505; }
+  .piece:hover .pm, .piece:hover .pp { color: #050505; }
+  .piece .pm { font-family: 'Space Mono', monospace; font-size: 11px; letter-spacing: .18em; color: var(--faint); text-transform: uppercase; }
+  .piece h3 { font-family: 'Archivo Black', sans-serif; font-size: clamp(19px, 2.2vw, 26px); line-height: 1; margin: auto 0 0; text-transform: uppercase; }
+  .piece .pp { font-family: 'Space Mono', monospace; font-size: 14px; color: var(--muted); }
+  .piece.soon { opacity: .45; cursor: default; }
+  .piece.soon:hover { background: #0b0b0b; color: inherit; }
+  .piece.soon:hover .pm, .piece.soon:hover .pp { color: var(--faint); }
+
+  /* ===== CTA ===== */
+  .cta { position: relative; text-align: center; padding: 130px 24px 120px; border-top: 1px solid var(--border); overflow: hidden; }
+  .cta h2 { font-family: 'Archivo Black', sans-serif; font-size: clamp(44px, 9vw, 140px); line-height: .9; margin: 0 0 26px; text-transform: uppercase; }
+  .cta h2 b { color: var(--acid); font-weight: 400; }
+  .cta p { font-family: 'Space Mono', monospace; font-size: 13px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin: 0 0 38px; }
+  .cta .btn { font-size: 15px; padding: 16px 34px; }
+
+  footer { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; max-width: 1160px; margin: 0 auto; padding: 28px 24px 40px; border-top: 1px solid var(--border); font-family: 'Space Mono', monospace; font-size: 12px; color: var(--faint); letter-spacing: .08em; }
+  footer .flogo { font-family: 'Archivo Black', sans-serif; font-size: 17px; color: var(--ink); letter-spacing: .06em; }
+  footer .flogo b { color: var(--acid); font-weight: 400; }
+
+  @media (max-width: 800px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 640px) {
+    nav { padding: 12px 16px; }
+    .look { padding: 90px 20px 80px; }
+    .cta { padding: 90px 20px 90px; }
+  }
+  @media (max-width: 480px) { .grid { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track, .scroll-hint span { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div id="pbar"></div>
+
+<nav>
+  <div class="logo">AVES<b>SO</b></div>
+  <a class="btn" href="#drop">VER O DROP</a>
+</nav>
+
+<header>
+  <div id="herocontent">
+    <span class="drop-tag fx">DROP 04 · BACKSTAGE</span>
+    <h1 class="fx" style="--fxd: 100ms;">VESTIR PELO<br><span class="out">LADO DE</span> DENTRO</h1>
+    <p class="hero-sub fx" style="--fxd: 220ms;">O drop novo está pendurado no escuro, entre araras e plástico bolha. Role: cada spot que acende revela uma peça.</p>
+    <div class="hero-ctas fx" style="--fxd: 340ms;">
+      <a class="btn" href="#drop">VER O DROP 04</a>
+      <a class="btn ghost" href="#">ENTRAR NA LISTA</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    backstage
+    <span></span>
+  </div>
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track">
+      <span>DROP 04 <b>·</b> 18 PEÇAS <b>·</b> SEM REPOSIÇÃO <b>·</b> ENVIO BR</span>
+      <span>DROP 04 <b>·</b> 18 PEÇAS <b>·</b> SEM REPOSIÇÃO <b>·</b> ENVIO BR</span>
+      <span>DROP 04 <b>·</b> 18 PEÇAS <b>·</b> SEM REPOSIÇÃO <b>·</b> ENVIO BR</span>
+      <span>DROP 04 <b>·</b> 18 PEÇAS <b>·</b> SEM REPOSIÇÃO <b>·</b> ENVIO BR</span>
+    </div>
+  </div>
+</header>
+
+<section id="scrubwrap" aria-label="Backstage em seis luzes">
+  <div class="scrub-sticky">
+    <video id="scrubvid" src="media/corredor-scrub.mp4" muted playsinline preload="auto"></video>
+    <div class="scrub-shade"></div>
+
+
+    <div class="cap" id="cap0">
+      <h2>NO <span class="out">ESCURO</span></h2>
+      <p>Tudo que você vai querer já está aqui. Você só não vê ainda.</p>
+    </div>
+    <div class="cap" id="cap1">
+      <h2>PRIMEIRA <span class="acid">LUZ</span></h2>
+      <p>Moletom oversized · felpa pesada 480 g/m²</p>
+    </div>
+    <div class="cap" id="cap2">
+      <h2><span class="out">CORTE</span> CRU</h2>
+      <p>Jaqueta boxy · costura exposta · sem forro</p>
+    </div>
+    <div class="cap" id="cap3">
+      <h2>PRETO NO <span class="acid">PRETO</span></h2>
+      <p>Calça parachute · nylon ripstop · bolso cargo</p>
+    </div>
+    <div class="cap" id="cap4">
+      <h2>ÚLTIMA <span class="out">ARARA</span></h2>
+      <p>Camiseta estampa avesso · serigrafia à mão</p>
+    </div>
+    <div class="cap" id="cap5">
+      <h2>A <span class="acid">PASSARELA</span><br>É A RUA</h2>
+      <p>Drop 04 completo na próxima seção. Sem reposição.</p>
+    </div>
+  </div>
+</section>
+
+<section class="look" id="drop">
+  <div class="look-head fx">
+    <h2>DROP <b>04</b></h2>
+    <span class="mono">18 peças · lançamento sexta 20h</span>
+  </div>
+  <div class="grid fx" style="--fxd: 120ms;">
+    <div class="piece"><span class="pm">MOLETOM</span><h3>HOOD AVESSO 480</h3><span class="pp">R$ 289</span></div>
+    <div class="piece"><span class="pm">JAQUETA</span><h3>BOXY CRUA</h3><span class="pp">R$ 429</span></div>
+    <div class="piece"><span class="pm">CALÇA</span><h3>PARACHUTE PTO</h3><span class="pp">R$ 319</span></div>
+    <div class="piece"><span class="pm">CAMISETA</span><h3>SERIGRAFIA 04</h3><span class="pp">R$ 129</span></div>
+    <div class="piece"><span class="pm">ACESSÓRIO</span><h3>GORRO DUPLA FACE</h3><span class="pp">R$ 89</span></div>
+    <div class="piece soon"><span class="pm">EM BREVE</span><h3>PEÇA SECRETA</h3><span class="pp">SEXTA 20H</span></div>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="cta-inner">
+    <h2 class="fx">SEXTA<br><b>20H</b></h2>
+    <p class="fx" style="--fxd: 120ms;">quem está na lista compra 1h antes · sem reposição</p>
+    <a class="btn fx" style="--fxd: 240ms;" href="#">ENTRAR NA LISTA</a>
+  </div>
+</section>
+
+<footer>
+  <span class="flogo">AVES<b>SO</b></span>
+  <span>© 2026 AVESSO STREETWEAR</span>
+  <a href="#">@avesso.wear</a>
+</footer>
+
+<script>
+(function () {
+  var vh = window.innerHeight;
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var wrap = document.getElementById('scrubwrap');
+  var vid = document.getElementById('scrubvid');
+  vid.muted = true;
+  try { vid.pause(); } catch (e) {}
+  function disableScrub() { wrap.classList.add('disabled'); }
+  vid.addEventListener('error', disableScrub);
+  if (vid.error) disableScrub();
+
+  var seekBusy = false, smoothT = 0, targetT = 0, scrubRaf = null;
+  vid.addEventListener('seeked', function () { seekBusy = false; });
+  function scrubStep() {
+    var cur = smoothT || vid.currentTime || 0;
+    var next = cur + (targetT - cur) * 0.22;
+    smoothT = next;
+    var diff = Math.abs(next - (vid.currentTime || 0));
+    if (!seekBusy && diff > 0.034 && vid.readyState > 0) {
+      seekBusy = true;
+      try { vid.currentTime = next; } catch (e) { seekBusy = false; }
+    }
+    if (Math.abs(targetT - next) < 0.01 && diff < 0.034) { scrubRaf = null; return; }
+    scrubRaf = requestAnimationFrame(scrubStep);
+  }
+  function startScrub() { if (!scrubRaf) scrubRaf = requestAnimationFrame(scrubStep); }
+
+  var N = 6;
+  var pbar = document.getElementById('pbar');
+  var hero = document.getElementById('herocontent');
+  var fxEls = document.querySelectorAll('.fx');
+
+  function update() {
+    var y = window.scrollY;
+    var doc = document.documentElement;
+    var max = doc.scrollHeight - vh;
+    pbar.style.width = (max > 0 ? (y / max) * 100 : 0) + '%';
+
+    hero.style.transform = 'translateY(' + (y * 0.16) + 'px)';
+    hero.style.opacity = String(Math.max(0, 1 - y / (vh * 0.9)));
+
+    fxEls.forEach(function (el) {
+      if (el.classList.contains('on')) return;
+      var r = el.getBoundingClientRect();
+      if (r.top < vh * 0.88 && r.bottom > -vh * 0.2) el.classList.add('on');
+    });
+
+    if (!wrap.classList.contains('disabled')) {
+      var r = wrap.getBoundingClientRect();
+      var total = r.height - vh;
+      var p = Math.min(1, Math.max(0, total > 0 ? -r.top / total : 0));
+      if (!reducedMotion && vid.duration) {
+        targetT = p * Math.max(0, vid.duration - 0.1);
+        startScrub();
+      }
+      var cur = Math.min(N - 1, Math.floor(p * N));
+      for (var i = 0; i < N; i++) {
+        var c = document.getElementById('cap' + i);
+        c.classList.toggle('show', i === cur && r.top <= 0 && p < 1.001);
+      }
+    }
+  }
+
+  var rafPending = false;
+  function onScroll() {
+    if (!rafPending) { rafPending = true; requestAnimationFrame(function () { rafPending = false; update(); }); }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function () { vh = window.innerHeight; onScroll(); });
+  update();
+  setTimeout(update, 300);
+  setTimeout(update, 1200);
+})();
+</script>
+</body>
+</html>

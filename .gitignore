@@ -1,0 +1,10 @@
+# Saída de build: reconstruída por build.sh
+public/lps/
+public/assets/video/
+public/assets/img/
+
+# Vídeos das LPs (42 MB) — ver a seção Assets do README
+lps/*/media/*.mp4
+
+__pycache__/
+.wrangler/

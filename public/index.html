@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-i18n="meta.title">otaviom — landing pages com história, produto e infra</title>
+<meta name="description" data-i18n-attr="content:meta.description" content="Desenho landing pages narrativas, construo o produto por trás delas e opero a infraestrutura que coloca tudo no ar. Sete peças, três casos técnicos e o pipeline que eu mesmo rodo.">
+<meta property="og:title" data-i18n-attr="content:meta.ogTitle" content="otaviom — landing pages com história">
+<meta property="og:description" data-i18n-attr="content:meta.ogDescription" content="O scroll vira câmera. Sete corredores, três produtos e a infra que sustenta tudo.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0a0a0c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
+<!-- Marca que o JS está vivo ANTES da primeira pintura. Sem esta classe o CSS
+     mantém tudo visível e colapsa o corredor: se o site.js falhar ou for
+     bloqueado, a página continua legível em vez de ficar em branco. -->
+<script>document.documentElement.className += ' js';</script>
+</head>
+<body>
+
+<div id="pbar" aria-hidden="true"></div>
+
+<nav>
+  <a class="logo" href="#topo">otaviom</a>
+  <div class="nav-right">
+    <a class="nav-link" href="#trabalho" data-i18n="nav.work">trabalho</a>
+    <a class="nav-link" href="#casos" data-i18n="nav.cases">casos</a>
+    <a class="nav-link" href="#sobre" data-i18n="nav.about">sobre</a>
+    <div class="lang" role="group" data-i18n-attr="aria-label:nav.langLabel" aria-label="Idioma">
+      <button type="button" class="lang-btn is-on" data-lang="pt">PT</button>
+      <span class="lang-sep">/</span>
+      <button type="button" class="lang-btn" data-lang="en">EN</button>
+    </div>
+    <a class="btn" href="#contato" data-i18n="nav.cta">falar comigo</a>
+  </div>
+</nav>
+
+<!-- ======================= 1. HERO ======================= -->
+<header id="topo">
+  <div class="hero-grad" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <p class="handle fx" data-i18n="hero.handle">otaviom · freelancer</p>
+    <h1 class="fx" style="--fxd: 100ms;" data-i18n-html="hero.title">Eu desenho páginas que <em>contam história</em>. E construo o que roda atrás delas.</h1>
+    <p class="hero-sub fx" style="--fxd: 200ms;" data-i18n="hero.sub">Landing pages onde o scroll é a câmera, produtos com backend de verdade e a infraestrutura que coloca os dois no ar. A peça inteira, feita por uma pessoa só.</p>
+    <div class="hero-ctas fx" style="--fxd: 300ms;">
+      <a class="btn btn-lg" href="#trabalho" data-i18n="hero.ctaWork">ver o trabalho</a>
+      <a class="btn-ghost" href="#contato" data-i18n="hero.ctaTalk">falar comigo</a>
+    </div>
+  </div>
+  <div class="scroll-hint" aria-hidden="true">
+    <span data-i18n="hero.hint">role</span>
+    <i></i>
+  </div>
+</header>
+
+<!-- ======================= 1b. CORREDOR (scrub) ======================= -->
+<section id="scrubwrap" aria-hidden="true">
+  <div class="scrub-sticky">
+    <video id="scrubvid" src="assets/video/hero-scrub.mp4" muted playsinline preload="auto"></video>
+    <div class="scrub-shade"></div>
+    <div class="scrub-cap" data-from="0.12" data-to="0.55">
+      <p class="cap-tag mono" data-i18n="scrub.tag">a técnica</p>
+      <h2 class="serif" data-i18n-html="scrub.line1">O scroll não rola a página. Ele <em>anda</em> pelo corredor.</h2>
+    </div>
+    <div class="scrub-cap" data-from="0.55" data-to="1.01">
+      <p class="cap-tag mono" data-i18n="scrub.tag2">como é feito</p>
+      <h2 class="serif" data-i18n-html="scrub.line2">Cada quadro é o vídeo sendo <em>buscado</em> na posição exata da barra de rolagem.</h2>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 2. O QUE EU FAÇO ======================= -->
+<section id="fazer" class="band">
+  <div class="wrap">
+    <p class="kicker mono fx" data-i18n="do.kicker">o que eu faço</p>
+    <h2 class="sec-title serif fx" style="--fxd: 80ms;" data-i18n="do.title">Três habilidades que o resto desta página comprova.</h2>
+
+    <div class="skills">
+      <article class="skill fx" style="--fxd: 120ms;">
+        <h3 data-i18n="do.s1.title">Landing pages com história</h3>
+        <p data-i18n="do.s1.body">A página inteira é uma travessia: o vídeo de fundo avança conforme o visitante rola, as legendas trocam por cena e a oferta chega no fim do corredor. Copy, direção de arte, animação e vídeo saem todos daqui.</p>
+        <p class="skill-stack mono" data-i18n="do.s1.stack">HTML · CSS · JS sem framework · scrub por Range</p>
+      </article>
+
+      <article class="skill fx" style="--fxd: 200ms;">
+        <h3 data-i18n="do.s2.title">Produto e backend</h3>
+        <p data-i18n="do.s2.body">Quando a página precisa de algo atrás dela: API, banco, autenticação, integração com serviço de terceiro, painel interno. Prefiro entregar pouco e em pé a entregar muito e instável.</p>
+        <p class="skill-stack mono" data-i18n="do.s2.stack">Node · TypeScript · Next · Postgres · Cloudflare Workers · D1</p>
+      </article>
+
+      <article class="skill fx" style="--fxd: 280ms;">
+        <h3 data-i18n="do.s3.title">Infra e pipeline próprio</h3>
+        <p data-i18n="do.s3.body">Eu opero o que entrego. Containers, proxy reverso, túnel, deploy no edge. E um pipeline local que gera os vídeos das histórias, sem depender de banco de imagens nem de crédito de plataforma.</p>
+        <p class="skill-stack mono" data-i18n="do.s3.stack">Docker · Caddy · Cloudflare Tunnel · Pages · ComfyUI</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 3. MOSTRUÁRIO ======================= -->
+<section id="trabalho" class="band">
+  <div class="wrap">
+    <p class="kicker mono fx" data-i18n="work.kicker">mostruário</p>
+    <h2 class="sec-title serif fx" style="--fxd: 80ms;" data-i18n="work.title">Sete corredores, sete nichos.</h2>
+    <p class="sec-sub fx" style="--fxd: 160ms;" data-i18n="work.disclaimer">São estudos de estilo para marcas fictícias: cada um testa a mesma gramática num nicho diferente. Abra qualquer um e atravesse a página inteira.</p>
+  </div>
+
+  <div class="works wrap">
+
+    <a class="work fx" style="--hue: #e8a33d;" href="lps/memo/" data-prev="assets/video/prev-memo.mp4" data-poster="assets/img/poster-memo.jpg">
+      <div class="work-vid" aria-hidden="true"><video muted loop playsinline preload="none"></video></div>
+      <span class="work-num mono">/01</span>
+      <span class="work-name">
+        <h3 class="serif">Memo</h3>
+        <span class="work-line" data-i18n="work.memo.line">o conhecimento saindo de mil arquivos soltos</span>
+      </span>
+      <span class="work-meta">
+        <span class="work-nicho mono" data-i18n="work.memo.niche">SaaS · produtividade</span>
+        <span class="sw"><i style="background:#0c0b09"></i><i style="background:#e8a33d"></i><i style="background:#f2ede4"></i></span>
+      </span>
+      <span class="work-go mono" data-i18n="work.go">atravessar</span>
+    </a>
+
+    <a class="work fx" style="--hue: #8fb56d; --fxd: 60ms;" href="lps/bamboo/" data-prev="assets/video/prev-bamboo.mp4" data-poster="assets/img/poster-bamboo.jpg">
+      <div class="work-vid" aria-hidden="true"><video muted loop playsinline preload="none"></video></div>
+      <span class="work-num mono">/02</span>
+      <span class="work-name">
+        <h3 class="serif">Bamboo</h3>
+        <span class="work-line" data-i18n="work.bamboo.line">as folhas de bananeira escondendo a loja inteira</span>
+      </span>
+      <span class="work-meta">
+        <span class="work-nicho mono" data-i18n="work.bamboo.niche">Cosméticos · bem-estar</span>
+        <span class="sw"><i style="background:#0a0f0a"></i><i style="background:#8fb56d"></i><i style="background:#cdb069"></i></span>
+      </span>
+      <span class="work-go mono" data-i18n="work.go">atravessar</span>
+    </a>
+
+    <a class="work fx" style="--hue: #b08d4f; --fxd: 120ms;" href="lps/halo/" data-prev="assets/video/prev-halo.mp4" data-poster="assets/img/poster-halo.jpg">
+      <div class="work-vid" aria-hidden="true"><video muted loop playsinline preload="none"></video></div>
+      <span class="work-num mono">/03</span>
+      <span class="work-name">
+        <h3 class="serif">Halo</h3>
+        <span class="work-line" data-i18n="work.halo.line">linho, vapor e a pele no fim do corredor</span>
+      </span>
+      <span class="work-meta">
+        <span class="work-nicho mono" data-i18n="work.halo.niche">Clínica · estética</span>
+        <span class="sw"><i style="background:#f6f2ea"></i><i style="background:#b08d4f"></i><i style="background:#262019"></i></span>
+      </span>
+      <span class="work-go mono" data-i18n="work.go">atravessar</span>
+    </a>
+
+    <a class="work fx" style="--hue: #e0502a; --fxd: 180ms;" href="lps/brasa/" data-prev="assets/video/prev-brasa.mp4" data-poster="assets/img/poster-brasa.jpg">
+      <div class="work-vid" aria-hidden="true"><video muted loop playsinline preload="none"></video></div>
+      <span class="work-num mono">/04</span>
+      <span class="work-name">
+        <h3 class="serif">Brasa</h3>
+        <span class="work-line" data-i18n="work.brasa.line">da boca do fogão à mesa, em seis tempos</span>
+      </span>
+      <span class="work-meta">
+        <span class="work-nicho mono" data-i18n="work.brasa.niche">Restaurante</span>
+        <span class="sw"><i style="background:#0d0907"></i><i style="background:#e0502a"></i><i style="background:#f4e8d8"></i></span>
+      </span>
+      <span class="work-go mono" data-i18n="work.go">atravessar</span>
+    </a>
+
+    <a class="work fx" style="--hue: #c8ff00; --fxd: 240ms;" href="lps/avesso/" data-prev="assets/video/prev-avesso.mp4" data-poster="assets/img/poster-avesso.jpg">
+      <div class="work-vid" aria-hidden="true"><video muted loop playsinline preload="none"></video></div>
+      <span class="work-num mono">/05</span>
+      <span class="work-name">
+        <h3 class="serif">AVESSO</h3>
+        <span class="work-line" data-i18n="work.avesso.line">o backstage acendendo um spot por vez</span>
+      </span>
+      <span class="work-meta">
+        <span class="work-nicho mono" data-i18n="work.avesso.niche">Streetwear · drop</span>
+        <span class="sw"><i style="background:#050505"></i><i style="background:#f4f4f4"></i><i style="background:#c8ff00"></i></span>
+      </span>
+      <span class="work-go mono" data-i18n="work.go">atravessar</span>
+    </a>
+
+    <a class="work fx" style="--hue: #8b5cf6; --fxd: 300ms;" href="lps/orbita/" data-prev="assets/video/prev-orbita.mp4" data-poster="assets/img/poster-orbita.jpg">
+      <div class="work-vid" aria-hidden="true"><video muted loop playsinline preload="none"></video></div>
+      <span class="work-num mono">/06</span>
+      <span class="work-name">
+        <h3 class="serif">Órbita</h3>
+        <span class="work-line" data-i18n="work.orbita.line">um portal por fase, até o lançamento</span>
+      </span>
+      <span class="work-meta">
+        <span class="work-nicho mono" data-i18n="work.orbita.niche">Lançamento digital</span>
+        <span class="sw"><i style="background:#05060d"></i><i style="background:#8b5cf6"></i><i style="background:#22d3ee"></i></span>
+      </span>
+      <span class="work-go mono" data-i18n="work.go">atravessar</span>
+    </a>
+
+    <a class="work fx" style="--hue: #c23d1a; --fxd: 360ms;" href="lps/giro/" data-poster="assets/img/poster-giro.jpg">
+      <div class="work-vid" aria-hidden="true"><video muted loop playsinline preload="none"></video></div>
+      <span class="work-num mono">/07</span>
+      <span class="work-name">
+        <h3 class="serif">GIRO</h3>
+        <span class="work-line" data-i18n="work.giro.line">a modelo gira 360° e cada peça abre numa lupa</span>
+      </span>
+      <span class="work-meta">
+        <span class="work-nicho mono" data-i18n="work.giro.niche">Moda · look completo</span>
+        <span class="sw"><i style="background:#ffffff"></i><i style="background:#c23d1a"></i><i style="background:#16130f"></i></span>
+      </span>
+      <span class="work-go mono" data-i18n="work.go">atravessar</span>
+    </a>
+
+  </div>
+
+  <div class="wrap">
+    <p class="works-note mono fx" data-i18n="work.note">A GIRO foge do padrão: em vez de vídeo, o giro é uma sequência de 161 quadros desenhados num canvas. Foi o jeito de manter a lupa nítida em qualquer ponto da volta.</p>
+  </div>
+</section>
+
+<!-- ======================= 4. CASOS TÉCNICOS ======================= -->
+<section id="casos" class="band">
+  <div class="wrap">
+    <p class="kicker mono fx" data-i18n="cases.kicker">casos técnicos</p>
+    <h2 class="sec-title serif fx" style="--fxd: 80ms;" data-i18n="cases.title">Onde o trabalho não aparece na tela.</h2>
+    <p class="sec-sub fx" style="--fxd: 160ms;" data-i18n="cases.sub">Produtos reais, descritos pelo que são. Sem métrica inventada e sem print de dashboard falso.</p>
+
+    <div class="cases">
+
+      <article class="case fx" style="--fxd: 120ms;">
+        <header class="case-head">
+          <h3 class="serif">Ata Recorder</h3>
+          <span class="case-tag mono" data-i18n="cases.ata.tag">produto · em operação</span>
+        </header>
+        <dl class="case-body">
+          <dt class="mono" data-i18n="cases.problem">o problema</dt>
+          <dd data-i18n="cases.ata.problem">Reunião gravada não vira conhecimento: ninguém reassiste duas horas de vídeo para achar a decisão que foi tomada no minuto 74.</dd>
+          <dt class="mono" data-i18n="cases.built">o que eu construí</dt>
+          <dd data-i18n="cases.ata.built">O backend de gravação: um robô entra na reunião pelo Zoom, Meet ou Teams, grava, transcreve e devolve resumo, plano de ação e mapa mental. Cada reunião ganha um chat próprio, e há um chat geral que responde cruzando todas elas, sempre citando a fonte.</dd>
+          <dt class="mono" data-i18n="cases.stack">stack</dt>
+          <dd class="case-stack mono" data-i18n="cases.ata.stack">Node · TypeScript · Postgres + pgvector · Firebase Auth · MeetingBaas</dd>
+          <dt class="mono" data-i18n="cases.now">agora</dt>
+          <dd data-i18n="cases.ata.now">Reescrita v2 em monorepo: Next 16, Expo, tokens de design próprios e i18n. Trabalho em andamento, não entregue.</dd>
+        </dl>
+        <a class="case-link mono" href="lps/ata/" data-i18n="cases.ata.link">ver a landing page do produto →</a>
+      </article>
+
+      <article class="case fx" style="--fxd: 200ms;">
+        <header class="case-head">
+          <h3 class="serif">Dropi</h3>
+          <span class="case-tag mono" data-i18n="cases.dropi.tag">interno · dashboard</span>
+        </header>
+        <dl class="case-body">
+          <dt class="mono" data-i18n="cases.problem">o problema</dt>
+          <dd data-i18n="cases.dropi.problem">Um scraper de frete coletava produtos o dia inteiro, mas conferir o que ele tinha trazido dependia de abrir o banco na mão.</dd>
+          <dt class="mono" data-i18n="cases.built">o que eu construí</dt>
+          <dd data-i18n="cases.dropi.built">Um dashboard interno para inspecionar a coleta: busca, filtro, detalhe do produto e o histórico de cada execução. Empacotado em Docker com healthcheck, testes de unidade e de ponta a ponta rodando antes do deploy.</dd>
+          <dt class="mono" data-i18n="cases.stack">stack</dt>
+          <dd class="case-stack mono" data-i18n="cases.dropi.stack">Next 14 App Router · Drizzle · Postgres 16 · NextAuth · TanStack Query · Vitest · Playwright · Docker</dd>
+        </dl>
+      </article>
+
+      <article class="case fx" style="--fxd: 280ms;">
+        <header class="case-head">
+          <h3 class="serif">Niko</h3>
+          <span class="case-tag mono" data-i18n="cases.niko.tag">pessoal · bot</span>
+        </header>
+        <dl class="case-body">
+          <dt class="mono" data-i18n="cases.problem">o problema</dt>
+          <dd data-i18n="cases.niko.problem">Os bots de música do meu servidor no Discord morriam ou viravam assinatura paga.</dd>
+          <dt class="mono" data-i18n="cases.built">o que eu construí</dt>
+          <dd data-i18n="cases.niko.built">Um bot próprio com fila, controle por botão em vez de comando decorado e saída automática do canal quando não tem ninguém ouvindo. Projeto pequeno e honesto: existe porque eu uso.</dd>
+          <dt class="mono" data-i18n="cases.stack">stack</dt>
+          <dd class="case-stack mono" data-i18n="cases.niko.stack">Python · discord.py</dd>
+        </dl>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 5. BASTIDORES ======================= -->
+<section id="bastidores" class="band band-alt">
+  <div class="wrap">
+    <p class="kicker mono fx" data-i18n="behind.kicker">bastidores</p>
+    <h2 class="sec-title serif fx" style="--fxd: 80ms;" data-i18n="behind.title">Os vídeos e os servidores também são meus.</h2>
+
+    <div class="behind">
+      <article class="bh fx" style="--fxd: 140ms;">
+        <h3 data-i18n="behind.b1.title">O vídeo nasce aqui</h3>
+        <p data-i18n="behind.b1.body">Nenhum corredor desta página veio de banco de imagens. Todos foram gerados na minha própria máquina, 15 segundos em 720p por peça, e depois re-encodados com quadros-chave densos, que é o que permite buscar o vídeo quadro a quadro enquanto você rola.</p>
+        <p class="bh-stack mono" data-i18n="behind.b1.stack">ComfyUI · Wan 2.2 · ffmpeg</p>
+      </article>
+
+      <article class="bh fx" style="--fxd: 220ms;">
+        <h3 data-i18n="behind.b2.title">E sobe pelo meu homelab</h3>
+        <p data-i18n="behind.b2.body">Rodo um servidor em casa com os serviços em containers, proxy reverso na frente e túnel para expor o que precisa de link externo. É onde os clientes revisam as peças antes de elas irem ao ar. O que é público mora no edge da Cloudflare.</p>
+        <p class="bh-stack mono" data-i18n="behind.b2.stack">Docker · Caddy · Cloudflare Tunnel · Pages · D1</p>
+      </article>
+
+      <article class="bh fx" style="--fxd: 300ms;">
+        <h3 data-i18n="behind.b3.title">Um detalhe que quebra tudo</h3>
+        <p data-i18n="behind.b3.body">Vídeo que responde ao scroll exige que o servidor devolva pedaços do arquivo sob demanda. Hospedagem estática costuma devolver o arquivo inteiro e o scrub congela, sem erro no console e sem aviso. Cada página daqui sobe com uma função no edge só para resolver isso.</p>
+        <p class="bh-stack mono" data-i18n="behind.b3.stack">HTTP Range · 206 Partial Content</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 6. SOBRE ======================= -->
+<section id="sobre" class="band">
+  <div class="wrap wrap-narrow">
+    <p class="kicker mono fx" data-i18n="about.kicker">sobre</p>
+    <div class="about fx" style="--fxd: 100ms;">
+      <p class="about-lead" data-i18n-html="about.lead">Sou <em>José Otávio</em>, desenvolvedor e designer freelancer no Brasil. Assino como otaviom.</p>
+      <p data-i18n="about.p1">Comecei pelo código e acabei desenhando, porque entregar uma página bonita que não sobe (ou uma que sobe e não convence ninguém) resolve metade do problema. Hoje pego a peça inteira: a ideia, a narrativa, o vídeo, o código e o servidor.</p>
+      <p data-i18n="about.p2">Trabalho sozinho e gosto de coisa pequena e bem-acabada. Se o projeto pede uma equipe, eu digo antes de começar.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 7. CONTATO ======================= -->
+<section id="contato" class="band band-end">
+  <div class="wrap wrap-narrow">
+    <h2 class="contact-title serif fx" data-i18n-html="contact.title">Tem uma história para contar?<br><em>Me manda o contexto.</em></h2>
+    <p class="contact-sub fx" style="--fxd: 100ms;" data-i18n="contact.sub">Diga o que você vende, para quem, e em quanto tempo precisa no ar. Eu respondo com o que dá para fazer e com o que não dá.</p>
+    <div class="contact-links fx" style="--fxd: 200ms;">
+      <a class="btn btn-lg" href="mailto:spellagenciabr@gmail.com" data-i18n="contact.email">spellagenciabr@gmail.com</a>
+      <a class="btn-ghost" id="link-whatsapp" href="https://wa.me/5519982674837" data-i18n="contact.whatsapp">WhatsApp · (19) 98267-4837</a>
+      <a class="btn-ghost" id="link-github" href="https://github.com/manolow5" rel="noopener" target="_blank" data-i18n="contact.github">GitHub</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="mono">José Otávio · otaviom · 2026</span>
+  <span class="mono" data-i18n="footer.made">landing pages com história · produto · infra</span>
+</footer>
+
+<!-- Se o site.js não carregar, devolvemos a página ao estado estático: sem a
+     classe `js` o CSS mostra tudo de uma vez em vez de esperar um reveal que
+     nunca vem. -->
+<script src="assets/js/site.js" defer onerror="document.documentElement.classList.remove('js')"></script>
+</body>
+</html>

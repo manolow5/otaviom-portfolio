@@ -1,0 +1,687 @@
+/* ===========================================================
+   otaviom — portfólio
+   A moldura é neutra de propósito: a cor entra pelas peças,
+   via --hue em cada item do mostruário.
+   Tipografia herdada das LPs (Instrument Serif + Space Grotesk
+   + IBM Plex Mono) para o portfólio e o trabalho parecerem a
+   mesma mão.
+   =========================================================== */
+
+:root {
+  --page: #0a0a0c;
+  --panel: #101014;
+  --ink: #efeeea;
+  --muted: #a5a29a;
+  --faint: #6f6d66;
+  --border: rgba(255, 255, 255, .1);
+  --border-soft: rgba(255, 255, 255, .06);
+  --navbg: rgba(10, 10, 12, .72);
+  --maxw: 1240px;
+  --gut: 28px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--page);
+  color: var(--ink);
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  scrollbar-color: #33322e var(--page);
+  -webkit-font-smoothing: antialiased;
+  /* `clip`, não `hidden`: hidden aqui cria contexto de rolagem e o
+     position: sticky do corredor para de colar, matando o scrub. */
+  overflow-x: clip;
+}
+
+a { color: inherit; text-decoration: none; }
+/* Qualquer display declarado depois venceria o `hidden` do HTML. */
+[hidden] { display: none !important; }
+h1, h2, h3 { font-weight: 400; margin: 0; }
+p { margin: 0; }
+img, video { max-width: 100%; display: block; }
+::selection { background: rgba(255, 255, 255, .18); }
+
+button {
+  font-family: inherit;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.mono { font-family: 'IBM Plex Mono', ui-monospace, monospace; }
+.serif { font-family: 'Instrument Serif', Georgia, serif; font-weight: 400; }
+
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--gut); }
+.wrap-narrow { max-width: 760px; }
+
+/* ===== Reveal ao rolar =====
+   Só escondemos o conteúdo quando há JavaScript para revelá-lo de volta.
+   Sem a classe .js (script bloqueado, erro de rede, leitor sem JS) a página
+   inteira aparece de uma vez, estática e legível. */
+.js .fx { opacity: 0; transform: translateY(22px); }
+.fx.on {
+  opacity: 1;
+  transform: none;
+  transition: opacity .9s cubic-bezier(.22, .61, .36, 1) var(--fxd, 0ms),
+              transform .9s cubic-bezier(.22, .61, .36, 1) var(--fxd, 0ms);
+}
+
+/* ===== Barra de progresso =====
+   Escala em vez de largura: animar width recalcula layout a cada quadro,
+   e esta barra é atualizada em todo evento de scroll. */
+#pbar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 100%;
+  background: var(--ink);
+  z-index: 90;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  will-change: transform;
+}
+
+/* ===== Nav ===== */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px var(--gut);
+  background: var(--navbg);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.logo {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 15px;
+  letter-spacing: .06em;
+  color: var(--ink);
+}
+
+.nav-right { display: flex; align-items: center; gap: 22px; }
+
+.nav-link {
+  font-size: 14px;
+  color: var(--muted);
+  transition: color .2s ease;
+}
+.nav-link:hover { color: var(--ink); }
+
+.lang {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: .1em;
+}
+.lang-sep { color: var(--faint); }
+.lang-btn { color: var(--faint); transition: color .2s ease; }
+.lang-btn:hover { color: var(--muted); }
+.lang-btn.is-on { color: var(--ink); }
+
+/* ===== Botões ===== */
+.btn {
+  display: inline-block;
+  background: var(--ink);
+  color: #0a0a0c;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 999px;
+  padding: 10px 20px;
+  transition: transform .2s ease, filter .2s ease;
+}
+.btn:hover { filter: brightness(.92); transform: translateY(-1px); }
+
+.btn-lg { font-size: 15px; padding: 15px 30px; }
+
+.btn-ghost {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  letter-spacing: .1em;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 14px 28px;
+  transition: border-color .25s ease, color .25s ease;
+}
+.btn-ghost:hover { border-color: var(--ink); color: var(--ink); }
+
+/* ===== Hero =====
+   Sempre pelo id: como seletor de elemento, `header` alcançaria também o
+   <header> de cada card de caso e imporia 100vh a eles. */
+#topo {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.hero-grad {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 12% 20%, rgba(255, 255, 255, .07), transparent 55%),
+    radial-gradient(ellipse at 90% 85%, rgba(255, 255, 255, .04), transparent 50%);
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  max-width: var(--maxw);
+  width: 100%;
+  margin: 0 auto;
+  padding: 140px var(--gut) 120px;
+}
+
+.handle {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+#topo h1 {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(44px, 7vw, 104px);
+  line-height: 1.0;
+  letter-spacing: -.01em;
+  margin: 28px 0 26px;
+  max-width: 15ch;
+}
+#topo h1 em { font-style: italic; color: var(--ink); }
+
+.hero-sub {
+  font-size: clamp(16px, 1.8vw, 19px);
+  line-height: 1.7;
+  color: var(--muted);
+  max-width: 52ch;
+  margin-bottom: 44px;
+}
+
+.hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+
+.scroll-hint {
+  position: absolute;
+  bottom: 30px;
+  left: var(--gut);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+.scroll-hint i {
+  display: block;
+  width: 46px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--faint), transparent);
+  animation: hintslide 2s ease-in-out infinite;
+}
+@keyframes hintslide {
+  0%, 100% { transform: translateX(0); opacity: .8; }
+  50% { transform: translateX(10px); opacity: .3; }
+}
+
+/* ===== Corredor (scrub por scroll) =====
+   O corredor só existe se houver JS para mover o vídeo. Sem isso ele seria
+   200vh de tela preta parada, então a altura só é liberada com a classe .js. */
+#scrubwrap { position: relative; height: 0; overflow: hidden; }
+.js #scrubwrap { height: 200vh; overflow: visible; }
+.js #scrubwrap.disabled { height: 0; overflow: hidden; }
+
+.scrub-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  background: #000;
+}
+
+#scrubvid {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.scrub-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg,
+    rgba(10, 10, 12, .7) 0%,
+    rgba(10, 10, 12, .15) 26%,
+    rgba(10, 10, 12, .2) 60%,
+    rgba(10, 10, 12, .9) 100%);
+}
+
+.scrub-cap {
+  position: absolute;
+  left: var(--gut);
+  bottom: 12%;
+  z-index: 3;
+  max-width: 620px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.scrub-cap.show { opacity: 1; transform: none; }
+
+.cap-tag {
+  font-size: 11px;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 14px;
+  text-shadow: 0 1px 14px rgba(0, 0, 0, .9);
+}
+.scrub-cap h2 {
+  font-size: clamp(28px, 4vw, 52px);
+  line-height: 1.08;
+  color: #fff;
+  text-shadow: 0 2px 30px rgba(0, 0, 0, .8);
+}
+.scrub-cap h2 em { font-style: italic; }
+
+/* ===== Faixas de seção ===== */
+.band { padding: 140px 0; border-top: 1px solid var(--border-soft); }
+.band-alt { background: var(--panel); }
+.band-end { padding: 160px 0 140px; }
+
+.kicker {
+  font-size: 11px;
+  letter-spacing: .28em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.sec-title {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(32px, 4.6vw, 60px);
+  line-height: 1.06;
+  margin: 22px 0 0;
+  max-width: 20ch;
+}
+
+.sec-sub {
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--muted);
+  max-width: 62ch;
+  margin-top: 22px;
+}
+
+/* ===== O que eu faço ===== */
+.skills {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  margin-top: 72px;
+  background: var(--border-soft);
+  border: 1px solid var(--border-soft);
+}
+
+.skill {
+  background: var(--page);
+  padding: 44px 36px 40px;
+}
+.band-alt .skill { background: var(--panel); }
+
+.skill h3 {
+  font-size: 21px;
+  line-height: 1.25;
+  margin-bottom: 16px;
+}
+
+.skill p {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--muted);
+}
+
+.skill-stack {
+  margin-top: 22px;
+  font-size: 11px;
+  line-height: 1.9;
+  letter-spacing: .06em;
+  color: var(--faint);
+}
+
+/* ===== Mostruário ===== */
+.works {
+  display: flex;
+  flex-direction: column;
+  margin-top: 72px;
+}
+
+.work {
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px 1.25fr 1fr auto;
+  align-items: center;
+  gap: 26px;
+  padding: 34px 22px;
+  border-top: 1px solid var(--border);
+  overflow: hidden;
+}
+.work:last-child { border-bottom: 1px solid var(--border); }
+
+/* Especificidade acima de `.work > *` (abaixo), senão o painel vira item do
+   grid e empurra o resto da faixa para fora do lugar. */
+.work .work-vid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity .45s ease;
+  pointer-events: none;
+  background-size: cover;
+  background-position: center;
+}
+.work-vid video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Escuro de propósito: o preview mostra que a página é viva e qual é a
+     paleta. Legível ele competiria com o texto da própria faixa. */
+  filter: brightness(.3) saturate(.85);
+}
+/* O preview passa atrás de texto em três colunas, então o véu escuro cobre a
+   faixa inteira e só alivia nos vãos. */
+.work-vid::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    rgba(10, 10, 12, .93) 0%,
+    rgba(10, 10, 12, .78) 30%,
+    rgba(10, 10, 12, .9) 50%,
+    rgba(10, 10, 12, .86) 100%);
+}
+
+/* Enquanto o preview está atrás, o texto da faixa ganha lastro. */
+.work:hover .work-line,
+.work:hover .work-nicho,
+.work:hover .work-name h3 { text-shadow: 0 1px 16px rgba(0, 0, 0, .95); }
+.work:hover .work-vid, .work:focus-visible .work-vid { opacity: 1; }
+
+.work > * { position: relative; z-index: 1; }
+
+.work-num { font-size: 12px; color: var(--faint); }
+
+.work-name { display: flex; flex-direction: column; gap: 7px; }
+.work-name h3 {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(26px, 3.4vw, 44px);
+  line-height: 1;
+  transition: transform .35s cubic-bezier(.22, .61, .36, 1);
+}
+.work:hover .work-name h3 { transform: translateX(12px); color: var(--hue); }
+.work:hover .work-num { color: var(--hue); }
+
+.work-line { font-size: 14px; color: var(--muted); }
+
+.work-meta { display: flex; flex-direction: column; gap: 9px; }
+.work-nicho {
+  font-size: 11px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.sw { display: flex; gap: 6px; }
+.sw i {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, .18);
+}
+
+.work-go {
+  font-size: 12px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 11px 20px;
+  white-space: nowrap;
+  transition: border-color .25s ease, color .25s ease;
+}
+.work:hover .work-go { border-color: var(--hue); color: var(--hue); }
+
+.works-note {
+  margin-top: 34px;
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--faint);
+  max-width: 68ch;
+}
+
+/* ===== Casos técnicos ===== */
+.cases {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 26px;
+  margin-top: 72px;
+  align-items: start;
+}
+
+.case {
+  border: 1px solid var(--border-soft);
+  border-radius: 4px;
+  padding: 34px 30px 30px;
+  background: rgba(255, 255, 255, .015);
+}
+
+.case-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.case-head h3 { font-size: 30px; line-height: 1; }
+.case-tag {
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.case-body { margin: 0; padding-top: 24px; }
+.case-body dt {
+  font-size: 10px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 8px;
+}
+.case-body dd {
+  margin: 0 0 22px;
+  font-size: 15px;
+  line-height: 1.72;
+  color: var(--muted);
+}
+.case-body dd:last-child { margin-bottom: 0; }
+.case-stack {
+  font-size: 11px !important;
+  line-height: 1.9;
+  letter-spacing: .05em;
+  color: var(--faint) !important;
+}
+
+.case-link {
+  display: inline-block;
+  margin-top: 26px;
+  font-size: 12px;
+  letter-spacing: .08em;
+  color: var(--ink);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+  transition: border-color .25s ease;
+}
+.case-link:hover { border-color: var(--ink); }
+
+/* ===== Bastidores ===== */
+.behind {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 48px;
+  margin-top: 72px;
+}
+
+.bh { border-top: 1px solid var(--border); padding-top: 26px; }
+.bh h3 { font-size: 19px; line-height: 1.3; margin-bottom: 14px; }
+.bh p { font-size: 15px; line-height: 1.75; color: var(--muted); }
+.bh-stack {
+  margin-top: 20px;
+  font-size: 11px;
+  letter-spacing: .06em;
+  color: var(--faint);
+}
+
+/* ===== Sobre ===== */
+.about { margin-top: 30px; display: flex; flex-direction: column; gap: 22px; }
+.about p { font-size: 16px; line-height: 1.8; color: var(--muted); }
+/* Depois de `.about p`, senão o corpo sobrescreve o tamanho da abertura. */
+.about p.about-lead {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-size: clamp(26px, 3.4vw, 40px);
+  line-height: 1.2;
+  color: var(--ink);
+}
+.about-lead em { font-style: italic; }
+
+/* ===== Contato ===== */
+.contact-title {
+  font-size: clamp(34px, 5.4vw, 68px);
+  line-height: 1.06;
+}
+.contact-title em { font-style: italic; color: var(--muted); }
+.contact-sub {
+  margin-top: 24px;
+  font-size: 17px;
+  line-height: 1.7;
+  color: var(--muted);
+  max-width: 52ch;
+}
+.contact-links {
+  margin-top: 44px;
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+/* ===== Rodapé ===== */
+footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  justify-content: space-between;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 28px var(--gut) 48px;
+  border-top: 1px solid var(--border-soft);
+  font-size: 12px;
+  color: var(--faint);
+}
+
+/* ===== Âncoras sob a nav fixa ===== */
+#topo, #trabalho, #casos, #sobre, #contato, #fazer, #bastidores { scroll-margin-top: 70px; }
+
+/* ===== Responsivo ===== */
+@media (max-width: 1000px) {
+  .skills { grid-template-columns: 1fr; }
+  .work { grid-template-columns: 44px 1fr auto; padding-left: 20px; }
+  .work-meta { display: none; }
+  /* A paleta sai por falta de espaço; a cor da peça fica nesta marca. */
+  .work::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    width: 2px;
+    height: 44%;
+    transform: translateY(-50%);
+    background: var(--hue);
+    opacity: .8;
+    z-index: 1;
+  }
+}
+
+@media (max-width: 760px) {
+  :root { --gut: 20px; }
+  .band { padding: 96px 0; }
+  .nav-link { display: none; }
+  .nav-right { gap: 16px; }
+  .hero-inner { padding: 120px var(--gut) 100px; }
+  #topo h1 { max-width: 100%; }
+  .hero-ctas .btn-lg, .hero-ctas .btn-ghost { flex: 1 1 auto; text-align: center; }
+  #scrubwrap { height: 170vh; }
+  .scrub-cap { right: var(--gut); bottom: 14%; }
+  .work { grid-template-columns: 1fr auto; gap: 16px; padding: 26px 14px; }
+  .work-num { display: none; }
+  .work-go { padding: 9px 15px; font-size: 11px; }
+  .works, .cases, .behind, .skills { margin-top: 52px; }
+  .contact-links { flex-direction: column; align-items: stretch; }
+  .contact-links .btn, .contact-links .btn-ghost { text-align: center; }
+  footer { flex-direction: column; align-items: flex-start; gap: 8px; }
+}
+
+/* Em tela de toque não há hover: o vídeo sai e fica o poster, fraco o
+   suficiente para dar cor e textura sem disputar leitura com o nome da peça
+   (vários posters têm tipografia grande). */
+/* Em tela de toque não há hover, e o poster atrás do texto só atrapalha: vários
+   deles têm tipografia enorme que disputa com o nome da peça. Fora ele, a cor
+   da peça entra pela marca lateral abaixo. */
+@media (hover: none) {
+  .work .work-vid { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .fx { opacity: 1; transform: none; }
+  .fx.on { transition: none; }
+  .scroll-hint i { animation: none; }
+  .work:hover .work-name h3 { transform: none; }
+  .work-vid video { display: none; }
+  /* Continua preso ao .js: sem JavaScript o corredor fica colapsado, senão
+     sobraria uma tela preta no lugar do vídeo que ninguém vai mover. */
+  .js #scrubwrap { height: auto; overflow: visible; }
+  .js .scrub-sticky { height: 70vh; }
+  .js .scrub-cap { position: static; opacity: 1; transform: none; padding: 0 var(--gut) 40px; }
+  .js .scrub-cap:first-of-type { padding-top: 40px; }
+}
