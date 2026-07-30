@@ -48,7 +48,8 @@
   .btn:hover { filter: brightness(1.08); }
 
   /* ===== Reveal on scroll ===== */
-  .fx { opacity: 0; transform: translateY(24px); }
+  /* Só esconde quando há JS para revelar: sem a classe .js, tudo visível. */
+  .js .fx { opacity: 0; transform: translateY(24px); }
   .fx.on { opacity: 1; transform: none; transition: opacity .9s cubic-bezier(.22,.61,.36,1) var(--fxd, 0ms), transform .9s cubic-bezier(.22,.61,.36,1) var(--fxd, 0ms); }
 
   /* ===== Hero ===== */
@@ -148,6 +149,9 @@
     .fx { opacity: 1; transform: none; }
   }
 </style>
+<!-- Marca que o JS está vivo ANTES da primeira pintura: sem esta classe os
+     elementos .fx ficam visíveis por padrão e a página funciona sem script. -->
+<script>document.documentElement.className += ' js';</script>
 </head>
 <body>
 
@@ -330,7 +334,15 @@
   var vid = document.getElementById('scrubvid');
   vid.muted = true;
   try { vid.pause(); } catch (e) {}
-  function disableScrub() { wrap.classList.add('disabled'); }
+  var scrubDisabled = false;
+  function disableScrub() {
+    // Encerra também o loop de animação: sem isto, um erro no vídeo deixava o
+    // requestAnimationFrame girando para sempre atrás de um seek que nunca chega.
+    scrubDisabled = true;
+    wrap.classList.add('disabled');
+    seekBusy = false;
+    if (scrubRaf) { cancelAnimationFrame(scrubRaf); scrubRaf = null; }
+  }
   vid.addEventListener('error', disableScrub);
   if (vid.error) disableScrub();
 
@@ -351,7 +363,7 @@
     if (Math.abs(targetT - next) < 0.01 && diff < 0.034) { scrubRaf = null; return; }
     scrubRaf = requestAnimationFrame(scrubStep);
   }
-  function startScrub() { if (!scrubRaf) scrubRaf = requestAnimationFrame(scrubStep); }
+  function startScrub() { if (!scrubDisabled && !scrubRaf) scrubRaf = requestAnimationFrame(scrubStep); }
 
   /* ===== Loop de scroll ===== */
   var N = 6;

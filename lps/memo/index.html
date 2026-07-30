@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" data-theme="noite">
+<html lang="pt-BR">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,8 +12,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  /* ===== Temas (troque via <html data-theme="noite|papel|brasa">) ===== */
-  :root, [data-theme="noite"] {
+  /* ===== Cores ===== */
+  :root {
     --page: #0c0b09; --panel: #14110d; --panel2: rgba(255,255,255,.06);
     --ink: #f2ede4; --muted: #b8afa1; --faint: #8d8476;
     --accent: #e8a33d; --accent-ink: #14110d; --accent-border: rgba(232,163,61,.35);
@@ -21,24 +21,6 @@
     --phone-border: rgba(255,255,255,.14);
     --hero-grad: radial-gradient(ellipse at 50% 90%, rgba(232,163,61,.16), transparent 55%);
     --accent-glow: rgba(232,163,61,.3);
-  }
-  [data-theme="papel"] {
-    --page: #f4efe5; --panel: #fffdf8; --panel2: rgba(34,28,19,.07);
-    --ink: #221c13; --muted: #5f5748; --faint: #857b69;
-    --accent: #b0731a; --accent-ink: #fffdf8; --accent-border: rgba(176,115,26,.45);
-    --border: rgba(34,28,19,.14); --navbg: rgba(244,239,229,.8);
-    --phone-border: rgba(34,28,19,.2);
-    --hero-grad: radial-gradient(ellipse at 50% 90%, rgba(176,115,26,.14), transparent 55%);
-    --accent-glow: rgba(176,115,26,.3);
-  }
-  [data-theme="brasa"] {
-    --page: #0e0a09; --panel: #171010; --panel2: rgba(255,255,255,.06);
-    --ink: #f5eee9; --muted: #c0b2a9; --faint: #93857c;
-    --accent: #e06a3f; --accent-ink: #170f0c; --accent-border: rgba(224,106,63,.4);
-    --border: rgba(255,255,255,.08); --navbg: rgba(14,10,9,.72);
-    --phone-border: rgba(255,255,255,.14);
-    --hero-grad: radial-gradient(ellipse at 50% 90%, rgba(224,106,63,.16), transparent 55%);
-    --accent-glow: rgba(224,106,63,.3);
   }
 
   html, body { margin: 0; padding: 0; background: var(--page); color: var(--ink); font-family: 'Space Grotesk', sans-serif; scrollbar-color: #3a332a var(--page); }
@@ -68,7 +50,8 @@
   .btn:hover { filter: brightness(1.08); }
 
   /* ===== Reveal on scroll ===== */
-  .fx { opacity: 0; transform: translateY(24px); }
+  /* Só esconde quando há JS para revelar: sem a classe .js, tudo visível. */
+  .js .fx { opacity: 0; transform: translateY(24px); }
   .fx.on { opacity: 1; transform: none; transition: opacity .9s cubic-bezier(.22,.61,.36,1) var(--fxd, 0ms), transform .9s cubic-bezier(.22,.61,.36,1) var(--fxd, 0ms); }
 
   /* ===== Hero ===== */
@@ -189,6 +172,9 @@
     .phone, .badge .dot, .scroll-hint span { animation: none; }
   }
 </style>
+<!-- Marca que o JS está vivo ANTES da primeira pintura: sem esta classe os
+     elementos .fx ficam visíveis por padrão e a página funciona sem script. -->
+<script>document.documentElement.className += ' js';</script>
 </head>
 <body>
 
@@ -208,10 +194,8 @@
       <span class="dot"></span>
       Memo · o corredor do caos
     </div>
-    <div class="tone-conf">
-      <h1 class="fx" style="--fxd: 120ms;">Seu conhecimento não devia<br>morar em <em>mil arquivos</em>.</h1>
-      <p class="hero-sub fx" style="--fxd: 240ms;">Notas soltas, pastas infinitas, copia-e-cola na IA, vídeos de duas horas. Role a página e percorra o corredor — até tudo caber num único lugar.</p>
-    </div>
+    <h1 class="fx" style="--fxd: 120ms;">Seu conhecimento não devia<br>morar em <em>mil arquivos</em>.</h1>
+    <p class="hero-sub fx" style="--fxd: 240ms;">Notas soltas, pastas infinitas, copia-e-cola na IA, vídeos de duas horas. Role a página e percorra o corredor — até tudo caber num único lugar.</p>
     <div class="hero-ctas fx" style="--fxd: 360ms;">
       <a class="btn" href="#" style="font-size: 16px; padding: 15px 30px;">Começar trial · 7 dias grátis</a>
       <span class="hero-note">sem cartão · cancela quando quiser</span>
@@ -231,50 +215,38 @@
 
     <div class="cap left" id="cap0">
       <div class="cap-tag">Notas soltas</div>
-      <div class="tone-conf">
-        <h2>Anotar tudo à mão não escala.</h2>
-        <p>Cada reunião, aula e vídeo vira um bloco de notas diferente. Nenhum deles conversa entre si.</p>
-      </div>
+      <h2>Anotar tudo à mão não escala.</h2>
+      <p>Cada reunião, aula e vídeo vira um bloco de notas diferente. Nenhum deles conversa entre si.</p>
     </div>
 
     <div class="cap right" id="cap1">
       <div class="cap-tag">Copia e cola</div>
-      <div class="tone-conf">
-        <h2>Copiar texto pra IA é loteria.</h2>
-        <p>Contexto pela metade, resultado incerto. E amanhã, tudo de novo.</p>
-      </div>
+      <h2>Copiar texto pra IA é loteria.</h2>
+      <p>Contexto pela metade, resultado incerto. E amanhã, tudo de novo.</p>
     </div>
 
     <div class="cap left" id="cap2" style="max-width: 500px;">
       <div class="cap-tag">As pastas</div>
-      <div class="tone-conf">
-        <h2 style="font-size: clamp(28px, 3.4vw, 44px); line-height: 1.12;">"resumo-final-v3-AGORA-VAI.docx"</h2>
-        <p>Milhares de arquivos nomeados pra organizar — e você ainda abre um por um pra saber o que tem dentro.</p>
-      </div>
+      <h2 style="font-size: clamp(28px, 3.4vw, 44px); line-height: 1.12;">"resumo-final-v3-AGORA-VAI.docx"</h2>
+      <p>Milhares de arquivos nomeados pra organizar — e você ainda abre um por um pra saber o que tem dentro.</p>
     </div>
 
     <div class="cap right" id="cap3" style="max-width: 500px;">
       <div class="cap-tag">Os vídeos</div>
-      <div class="tone-conf">
-        <h2>Duas horas de vídeo.<br>Uma pergunta.</h2>
-        <p>Em vez de assistir, transcreva e pergunte direto. O vídeo inteiro vai pra caixa.</p>
-      </div>
+      <h2>Duas horas de vídeo.<br>Uma pergunta.</h2>
+      <p>Em vez de assistir, transcreva e pergunte direto. O vídeo inteiro vai pra caixa.</p>
     </div>
 
     <div class="cap left" id="cap4">
       <div class="cap-tag">Encaixotando</div>
-      <div class="tone-conf">
-        <h2>Tudo que era bagunça, empacotado.</h2>
-        <p>Notas, arquivos, vídeos, resumos — cada coisa na sua caixa.</p>
-      </div>
+      <h2>Tudo que era bagunça, empacotado.</h2>
+      <p>Notas, arquivos, vídeos, resumos — cada coisa na sua caixa.</p>
     </div>
 
     <div class="cap center" id="cap5">
       <div class="cap-tag">O fim do corredor</div>
-      <div class="tone-conf">
-        <h2>E tudo cabe <em>aqui dentro</em>.</h2>
-        <p>As caixas entram no celular. Um lugar só — com busca que responde.</p>
-      </div>
+      <h2>E tudo cabe <em>aqui dentro</em>.</h2>
+      <p>As caixas entram no celular. Um lugar só — com busca que responde.</p>
     </div>
   </div>
 </section>
@@ -282,10 +254,8 @@
 <section class="tour">
   <div class="tour-head">
     <div class="kicker fx">Dentro do celular</div>
-    <div class="tone-conf">
-      <h2 class="fx" style="--fxd: 100ms;">Tudo aquilo, aqui dentro.</h2>
-      <p class="fx" style="--fxd: 200ms;">Grave uma reunião ou cole um link de vídeo. A Memo transcreve, gera os documentos, desenha o mapa mental e responde perguntas sobre tudo que você guardou.</p>
-    </div>
+    <h2 class="fx" style="--fxd: 100ms;">Tudo aquilo, aqui dentro.</h2>
+    <p class="fx" style="--fxd: 200ms;">Grave uma reunião ou cole um link de vídeo. A Memo transcreve, gera os documentos, desenha o mapa mental e responde perguntas sobre tudo que você guardou.</p>
   </div>
 
   <div class="tour-body">
@@ -358,10 +328,8 @@
 <section class="cta">
   <div class="cta-grad"></div>
   <div class="cta-inner">
-    <div class="tone-conf">
-      <h2 class="fx">Saia do corredor.</h2>
-      <p class="fx" style="--fxd: 150ms;">7 dias grátis. Sem cartão. Suas próximas reuniões e vídeos já nascem organizados.</p>
-    </div>
+    <h2 class="fx">Saia do corredor.</h2>
+    <p class="fx" style="--fxd: 150ms;">7 dias grátis. Sem cartão. Suas próximas reuniões e vídeos já nascem organizados.</p>
     <a class="btn fx" style="--fxd: 280ms;" href="#">Começar trial · 7 dias grátis</a>
   </div>
 </section>
@@ -394,8 +362,17 @@
   var vid = document.getElementById('scrubvid');
   vid.muted = true;
   try { vid.pause(); } catch (e) {}
-  vid.addEventListener('error', function () { wrap.classList.add('disabled'); });
-  if (vid.error) wrap.classList.add('disabled');
+  var scrubDisabled = false;
+  function disableScrub() {
+    // Encerra também o loop de animação: sem isto, um erro no vídeo deixava o
+    // requestAnimationFrame girando para sempre atrás de um seek que nunca chega.
+    scrubDisabled = true;
+    wrap.classList.add('disabled');
+    seekBusy = false;
+    if (scrubRaf) { cancelAnimationFrame(scrubRaf); scrubRaf = null; }
+  }
+  vid.addEventListener('error', disableScrub);
+  if (vid.error) disableScrub();
 
   var seekBusy = false, smoothT = 0, targetT = 0, scrubRaf = null;
   vid.addEventListener('seeked', function () { seekBusy = false; });
@@ -414,7 +391,7 @@
     if (Math.abs(targetT - next) < 0.01 && diff < 0.034) { scrubRaf = null; return; }
     scrubRaf = requestAnimationFrame(scrubStep);
   }
-  function startScrub() { if (!scrubRaf) scrubRaf = requestAnimationFrame(scrubStep); }
+  function startScrub() { if (!scrubDisabled && !scrubRaf) scrubRaf = requestAnimationFrame(scrubStep); }
 
   /* ===== Loop de scroll ===== */
   var N = 6;

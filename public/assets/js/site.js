@@ -44,6 +44,10 @@
     );
     var dictionaries = Object.create(null);
     var activeLanguage = 'pt';
+    // A última escolha do visitante, registrada ANTES do fetch resolver.
+    // Sem isto, clicar PT e depois EN durante o carregamento terminava em PT:
+    // o clique era comparado com um activeLanguage ainda antigo.
+    var wantedLanguage = 'pt';
 
     function supportedLanguage(value) {
       return value === 'en' ? 'en' : value === 'pt' ? 'pt' : null;
@@ -156,6 +160,7 @@
     function selectLanguage(language, options) {
       var selected = supportedLanguage(language);
       if (!selected) return Promise.resolve(false);
+      wantedLanguage = selected;
 
       if (selected === 'pt' && options.initial) {
         updateLanguageControls('pt');
@@ -164,6 +169,9 @@
 
       return loadDictionary(selected)
         .then(function (dictionary) {
+          // Outra escolha chegou enquanto este dicionário carregava: o último
+          // clique manda, e esta resposta é descartada.
+          if (wantedLanguage !== selected) return false;
           applyDictionary(dictionary);
           updateLanguageControls(selected);
           if (options.persist) saveLanguage(selected);
@@ -172,7 +180,9 @@
           return true;
         })
         .catch(function () {
-          if (options.initial) updateLanguageControls('pt');
+          if (options.initial && wantedLanguage === selected) {
+            updateLanguageControls('pt');
+          }
           return false;
         });
     }
@@ -182,7 +192,9 @@
     buttons.forEach(function (button) {
       button.addEventListener('click', function () {
         var language = supportedLanguage(button.dataset.lang);
-        if (!language || language === activeLanguage) return;
+        // Compara com a escolha mais recente, não com o idioma já aplicado:
+        // durante um carregamento, os dois divergem.
+        if (!language || language === wantedLanguage) return;
         selectLanguage(language, {
           initial: false,
           persist: true,

@@ -32,7 +32,8 @@
   .btn { display: inline-block; background: var(--ink); color: #050505; font-family: 'Space Mono', monospace; font-weight: 700; font-size: 13px; letter-spacing: .04em; padding: 11px 20px; border-radius: 0; transition: all .2s ease; }
   .btn:hover { background: var(--acid); }
 
-  .fx { opacity: 0; transform: translateY(24px); }
+  /* Só esconde quando há JS para revelar: sem a classe .js, tudo visível. */
+  .js .fx { opacity: 0; transform: translateY(24px); }
   .fx.on { opacity: 1; transform: none; transition: opacity .8s cubic-bezier(.22,.61,.36,1) var(--fxd, 0ms), transform .8s cubic-bezier(.22,.61,.36,1) var(--fxd, 0ms); }
 
   /* ===== Hero ===== */
@@ -107,6 +108,9 @@
     .marquee-track, .scroll-hint span { animation: none; }
   }
 </style>
+<!-- Marca que o JS está vivo ANTES da primeira pintura: sem esta classe os
+     elementos .fx ficam visíveis por padrão e a página funciona sem script. -->
+<script>document.documentElement.className += ' js';</script>
 </head>
 <body>
 
@@ -212,7 +216,15 @@
   var vid = document.getElementById('scrubvid');
   vid.muted = true;
   try { vid.pause(); } catch (e) {}
-  function disableScrub() { wrap.classList.add('disabled'); }
+  var scrubDisabled = false;
+  function disableScrub() {
+    // Encerra também o loop de animação: sem isto, um erro no vídeo deixava o
+    // requestAnimationFrame girando para sempre atrás de um seek que nunca chega.
+    scrubDisabled = true;
+    wrap.classList.add('disabled');
+    seekBusy = false;
+    if (scrubRaf) { cancelAnimationFrame(scrubRaf); scrubRaf = null; }
+  }
   vid.addEventListener('error', disableScrub);
   if (vid.error) disableScrub();
 
@@ -230,7 +242,7 @@
     if (Math.abs(targetT - next) < 0.01 && diff < 0.034) { scrubRaf = null; return; }
     scrubRaf = requestAnimationFrame(scrubStep);
   }
-  function startScrub() { if (!scrubRaf) scrubRaf = requestAnimationFrame(scrubStep); }
+  function startScrub() { if (!scrubDisabled && !scrubRaf) scrubRaf = requestAnimationFrame(scrubStep); }
 
   var N = 6;
   var pbar = document.getElementById('pbar');
