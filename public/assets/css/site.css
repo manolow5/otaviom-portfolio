@@ -486,6 +486,77 @@ nav {
   max-width: 68ch;
 }
 
+/* ===== Produto em operação (Ata Recorder) =====
+   Faixa própria, em band-alt, porque é o único produto do portfólio com
+   domínio próprio no ar. O print é claro e a página é escura: a moldura com
+   borda e sombra funda evita que a imagem pareça colada, sem inventar uma
+   janela de navegador falsa em volta dela. */
+.ata-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr);
+  gap: 56px;
+  align-items: center;
+  margin-top: 54px;
+}
+
+.ata-name { font-size: clamp(38px, 5.2vw, 64px); line-height: 1.02; }
+
+.ata-line {
+  margin-top: 22px;
+  font-size: 18px;
+  line-height: 1.66;
+  color: var(--muted);
+  max-width: 36ch;
+}
+
+.ata-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+  margin-top: 36px;
+}
+
+.ata-shot { margin: 0; }
+.ata-shot img {
+  width: 100%;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  box-shadow: 0 30px 74px -32px rgba(0, 0, 0, .95);
+}
+.ata-shot figcaption {
+  margin-top: 15px;
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+/* Duas colunas, não quatro: em quatro, "o que eu construí" virava uma coluna
+   de oito linhas com 30 caracteres ao lado de uma stack de três. */
+.ata-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px 56px;
+  margin: 78px 0 0;
+  padding-top: 46px;
+  border-top: 1px solid var(--border-soft);
+}
+.ata-fact dt {
+  font-size: 10px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 10px;
+}
+.ata-fact dd {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.72;
+  color: var(--muted);
+}
+
 /* ===== Casos técnicos ===== */
 .cases {
   display: grid;
@@ -625,6 +696,10 @@ footer {
 /* ===== Responsivo ===== */
 @media (max-width: 1000px) {
   .skills { grid-template-columns: 1fr; }
+  /* O print vai para baixo do texto: em coluna estreita ele encolheria tanto
+     que a interface do produto ficaria ilegível ao lado da tipografia. */
+  .ata-top { grid-template-columns: 1fr; gap: 42px; }
+  .ata-line { max-width: none; }
   .work { grid-template-columns: 44px 1fr auto; padding-left: 20px; }
   .work-meta { display: none; }
   /* A paleta sai por falta de espaço; a cor da peça fica nesta marca. */
@@ -650,6 +725,8 @@ footer {
   .hero-inner { padding: 120px var(--gut) 100px; }
   #topo h1 { max-width: 100%; }
   .hero-ctas .btn-lg, .hero-ctas .btn-ghost { flex: 1 1 auto; text-align: center; }
+  .ata-ctas .btn-lg, .ata-ctas .btn-ghost { flex: 1 1 auto; text-align: center; }
+  .ata-facts { grid-template-columns: 1fr; margin-top: 56px; padding-top: 36px; gap: 30px; }
   #scrubwrap { height: 170vh; }
   .scrub-cap { right: var(--gut); bottom: 14%; }
   .work { grid-template-columns: 1fr auto; gap: 16px; padding: 26px 14px; }

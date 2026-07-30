@@ -3,25 +3,22 @@
   "meta.description": "Desenho landing pages narrativas, construo o produto por trás delas e opero a infraestrutura que coloca tudo no ar. Sete peças, três casos técnicos e o pipeline que eu mesmo rodo.",
   "meta.ogTitle": "otaviom — landing pages com história",
   "meta.ogDescription": "O scroll vira câmera. Sete corredores, três produtos e a infra que sustenta tudo.",
-
   "nav.work": "trabalho",
+  "nav.product": "produto",
   "nav.cases": "casos",
   "nav.about": "sobre",
   "nav.cta": "falar comigo",
   "nav.langLabel": "Idioma",
-
   "hero.handle": "otaviom · freelancer",
   "hero.title": "Eu desenho páginas que <em>contam história</em>. E construo o que roda atrás delas.",
   "hero.sub": "Landing pages onde o scroll é a câmera, produtos com backend de verdade e a infraestrutura que coloca os dois no ar. A peça inteira, feita por uma pessoa só.",
   "hero.ctaWork": "ver o trabalho",
   "hero.ctaTalk": "falar comigo",
   "hero.hint": "role",
-
   "scrub.tag": "a técnica",
   "scrub.line1": "O scroll não rola a página. Ele <em>anda</em> pelo corredor.",
   "scrub.tag2": "como é feito",
   "scrub.line2": "Cada quadro é o vídeo sendo <em>buscado</em> na posição exata da barra de rolagem.",
-
   "do.kicker": "o que eu faço",
   "do.title": "Três habilidades que o resto desta página comprova.",
   "do.s1.title": "Landing pages com história",
@@ -33,7 +30,6 @@
   "do.s3.title": "Infra e pipeline próprio",
   "do.s3.body": "Eu opero o que entrego. Containers, proxy reverso, túnel, deploy no edge. E um pipeline local que gera os vídeos das histórias, sem depender de banco de imagens nem de crédito de plataforma.",
   "do.s3.stack": "Docker · Caddy · Cloudflare Tunnel · Pages · ComfyUI",
-
   "work.kicker": "mostruário",
   "work.title": "Sete corredores, sete nichos.",
   "work.disclaimer": "São estudos de estilo para marcas fictícias: cada um testa a mesma gramática num nicho diferente. Abra qualquer um e atravesse a página inteira.",
@@ -53,7 +49,10 @@
   "work.giro.line": "a modelo gira 360° e cada peça abre numa lupa",
   "work.giro.niche": "Moda · look completo",
   "work.note": "A GIRO foge do padrão: em vez de vídeo, o giro é uma sequência de 161 quadros desenhados num canvas. Foi o jeito de manter a lupa nítida em qualquer ponto da volta.",
-
+  "product.kicker": "produto em operação",
+  "product.line": "O projeto mais completo que eu construí: do robô que entra na reunião até a interface que devolve a ata pronta.",
+  "product.shotAlt": "A página inicial do Ata Recorder, com um painel mostrando a transcrição de uma reunião e os cartões de decisão e tarefa extraídos dela.",
+  "product.shotCap": "print do site no ar, sem mockup",
   "cases.kicker": "casos técnicos",
   "cases.title": "Onde o trabalho não aparece na tela.",
   "cases.sub": "Produtos reais, descritos pelo que são. Sem métrica inventada e sem print de dashboard falso.",
@@ -61,12 +60,10 @@
   "cases.built": "o que eu construí",
   "cases.stack": "stack",
   "cases.now": "agora",
-  "cases.ata.tag": "produto · em operação",
   "cases.ata.problem": "Reunião gravada não vira conhecimento: ninguém reassiste duas horas de vídeo para achar a decisão que foi tomada no minuto 74.",
   "cases.ata.built": "O backend de gravação: um robô entra na reunião pelo Zoom, Meet ou Teams, grava, transcreve e devolve resumo, plano de ação e mapa mental. Cada reunião ganha um chat próprio, e há um chat geral que responde cruzando todas elas, sempre citando a fonte.",
   "cases.ata.stack": "Node · TypeScript · Postgres + pgvector · Firebase Auth · MeetingBaas",
   "cases.ata.now": "Reescrita v2 em monorepo: Next 16, Expo, tokens de design próprios e i18n. Trabalho em andamento, não entregue.",
-  "cases.ata.link": "ver a landing page do produto →",
   "cases.dropi.tag": "interno · dashboard",
   "cases.dropi.problem": "Um scraper de frete coletava produtos o dia inteiro, mas conferir o que ele tinha trazido dependia de abrir o banco na mão.",
   "cases.dropi.built": "Um dashboard interno para inspecionar a coleta: busca, filtro, detalhe do produto e o histórico de cada execução. Empacotado em Docker com healthcheck, testes de unidade e de ponta a ponta rodando antes do deploy.",
@@ -75,7 +72,6 @@
   "cases.niko.problem": "Os bots de música do meu servidor no Discord morriam ou viravam assinatura paga.",
   "cases.niko.built": "Um bot próprio com fila, controle por botão em vez de comando decorado e saída automática do canal quando não tem ninguém ouvindo. Projeto pequeno e honesto: existe porque eu uso.",
   "cases.niko.stack": "Python · discord.py",
-
   "behind.kicker": "bastidores",
   "behind.title": "Os vídeos e os servidores também são meus.",
   "behind.b1.title": "O vídeo nasce aqui",
@@ -87,17 +83,14 @@
   "behind.b3.title": "Um detalhe que quebra tudo",
   "behind.b3.body": "Vídeo que responde ao scroll exige que o servidor devolva pedaços do arquivo sob demanda. Hospedagem estática costuma devolver o arquivo inteiro e o scrub congela, sem erro no console e sem aviso. Cada página daqui sobe com uma função no edge só para resolver isso.",
   "behind.b3.stack": "HTTP Range · 206 Partial Content",
-
   "about.kicker": "sobre",
   "about.lead": "Sou <em>José Otávio</em>, desenvolvedor e designer freelancer no Brasil. Assino como otaviom.",
   "about.p1": "Comecei pelo código e acabei desenhando, porque entregar uma página bonita que não sobe (ou uma que sobe e não convence ninguém) resolve metade do problema. Hoje pego a peça inteira: a ideia, a narrativa, o vídeo, o código e o servidor.",
   "about.p2": "Trabalho sozinho e gosto de coisa pequena e bem-acabada. Se o projeto pede uma equipe, eu digo antes de começar.",
-
   "contact.title": "Tem uma história para contar?<br><em>Me manda o contexto.</em>",
   "contact.sub": "Diga o que você vende, para quem, e em quanto tempo precisa no ar. Eu respondo com o que dá para fazer e com o que não dá.",
   "contact.email": "spellagenciabr@gmail.com",
   "contact.whatsapp": "WhatsApp · (19) 98267-4837",
   "contact.github": "GitHub",
-
   "footer.made": "landing pages com história · produto · infra"
 }

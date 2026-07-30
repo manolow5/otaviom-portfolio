@@ -1,7 +1,11 @@
-# Saída de build: reconstruída por build.sh
+# Saída de build: reconstruída por build.sh.
+# Por arquivo, não por diretório: assets/img/ e assets/video/ também guardam
+# coisa feita à mão, que precisa ser versionada — ignorar a pasta inteira
+# apagaria essas do repositório sem avisar.
 public/lps/
-public/assets/video/
-public/assets/img/
+public/assets/video/hero-scrub.mp4
+public/assets/video/prev-*.mp4
+public/assets/img/poster-*.jpg
 
 # Vídeos das LPs (42 MB) — ver a seção Assets do README
 lps/*/media/*.mp4
