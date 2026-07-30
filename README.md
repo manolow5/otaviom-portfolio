@@ -128,7 +128,7 @@ done
 ## Sobre as peças
 
 As seis LPs do mostruário são estudos de estilo para marcas fictícias: cada uma
-testa a mesma gramática narrativa num nicho diferente. A oitava, `ata`, é a
+testa a mesma gramática narrativa num nicho diferente. A sétima, `ata`, é a
 landing page de um produto real e por isso fica fora do mostruário — ela aparece
 dentro do caso técnico do produto.
 

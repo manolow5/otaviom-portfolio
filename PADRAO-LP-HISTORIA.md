@@ -1,6 +1,6 @@
 # Padrão: LP com história em vídeo de fundo (scroll scrub)
 
-Referência implementada: `ata/index.html` (design "Corredor do Caos v2" no claude.ai/design).
+Referência implementada: `lps/ata/index.html` (design "Corredor do Caos v2").
 
 Use este padrão em LPs onde uma animação/vídeo de fundo conta uma história enquanto o visitante rola a página.
 
@@ -29,7 +29,7 @@ Use este padrão em LPs onde uma animação/vídeo de fundo conta uma história 
   ```
   (keyframe a cada 4 frames ≈ 0,17s; ~9 MB para 12s 1080p). Servir o arquivo local em `media/` junto da LP, não a URL do CDN de geração.
 - **Servidor PRECISA suportar HTTP Range (206)**: sem `Accept-Ranges`/`206 Partial Content` o Chrome trata o vídeo como não-buscável e `currentTime` vira no-op — o scrub congela em todas as LPs. `python3 -m http.server` NÃO suporta Range; usar o `serve.py` da raiz deste repo para testes locais (`python3 serve.py 8090`). Nginx/Apache/Caddy suportam nativamente.
-- **Cloudflare Pages também NÃO devolve 206** para assets estáticos: precisa de uma Pages Function interceptando `/media/*` e fatiando o asset manualmente (código pronto em `.deploy/functions-template/media/[[path]].js`). Estrutura do deploy: `public/` (site) + `functions/` lado a lado, e rodar `wrangler pages deploy public` DE DENTRO dessa pasta (o wrangler só empacota `functions/` do diretório atual). Se o edge tiver cacheado a resposta 200 antiga, versionar a URL do vídeo (`?v=2`).
+- **Cloudflare Pages também NÃO devolve 206** para assets estáticos: precisa de uma Pages Function interceptando `/media/*` e fatiando o asset manualmente (implementada aqui em `functions/_lib/range.js`, servindo as duas rotas). Estrutura do deploy: `public/` (site) + `functions/` lado a lado, e rodar `wrangler pages deploy public` DE DENTRO dessa pasta (o wrangler só empacota `functions/` do diretório atual). Se o edge tiver cacheado a resposta 200 antiga, versionar a URL do vídeo (`?v=2`).
 - **Fallback**: listener de `error` no vídeo colapsa a seção (`height: 0`) — a página funciona sem a história.
 - **Scroll handler**: um único listener `passive` com throttle via `requestAnimationFrame`.
 - **Reveals**: elementos `.fx` com `opacity 0 / translateY(24px)`, revelados quando entram em `vh * 0.88`, com delay por elemento (`--fxd`).
@@ -51,4 +51,3 @@ Use este padrão em LPs onde uma animação/vídeo de fundo conta uma história 
 - Fluxo: 2-3 variações `--fast` → escolher → `--full` (mesma seed da variação escolhida, `--seed N`).
 - Modelos: Wan 2.2 A14B GGUF Q4_K_M + LoRA Lightning 4 steps (16fps nativo; 24fps sai do ffmpeg).
 - Segurança: porta 8188 liberada só para a rede do WSL; nunca expor à internet; fechar o servidor após usar.
-- Detalhes: `docs/superpowers/specs/2026-07-20-geracao-video-local-design.md`.

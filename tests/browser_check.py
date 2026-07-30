@@ -3,12 +3,18 @@
 Cobre o que teste de arquivo não pega: regressão de layout por especificidade de
 CSS, o scrub movendo o vídeo, a troca de idioma e o preview no hover.
 
-Antes de rodar:
+Antes de rodar, no repositório lps (portfólio em /portfolio/public/):
     python3 serve.py 8091                    # da raiz do repo (tem HTTP Range)
+    python3 portfolio/tests/browser_check.py
+
+No repositório do portfólio publicado (portfólio na raiz):
+    python3 serve.py 8091 public
+    PORTFOLIO_URL=http://localhost:8091/ python3 tests/browser_check.py
+
+Nos dois casos o Chrome precisa estar de pé — e em WSL tem que ser o do Linux,
+porque o chrome.exe escuta o CDP num localhost que o WSL não alcança:
     <chrome> --headless=new --no-sandbox --remote-debugging-port=9222 \
         --window-size=1440,1000 --user-data-dir=/tmp/perfil about:blank
-
-    python3 portfolio/tests/browser_check.py
 
 Sai com código 1 se alguma verificação falhar.
 """

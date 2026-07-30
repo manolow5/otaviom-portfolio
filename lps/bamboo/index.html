@@ -145,6 +145,8 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
+    /* Reveals aparecem sem deslocamento; o parallax é pulado no JS. */
+    .js .fx { opacity: 1; transform: none; transition: none; }
     .shelf, .shelf-leaf { animation: none; }
     .fx { opacity: 1; transform: none; }
   }
@@ -380,7 +382,7 @@
     pbar.style.width = pct + '%';
     pbar.setAttribute('aria-valuenow', String(Math.round(pct)));
 
-    hero.style.transform = 'translateY(' + (y * 0.16) + 'px)';
+    if (!reducedMotion) hero.style.transform = 'translateY(' + (y * 0.16) + 'px)';
     hero.style.opacity = String(Math.max(0, 1 - y / (vh * 0.9)));
 
     fxEls.forEach(function (el) {
@@ -416,6 +418,14 @@
   setTimeout(update, 300);
   setTimeout(update, 1200);
 })();
+</script>
+<script>
+  // Os CTAs desta página são demonstração de uma marca fictícia: não levam a
+  // lugar nenhum de propósito, e sem isto o clique pulava para o topo.
+  document.querySelectorAll('a[href="#"]').forEach(function (a) {
+    a.setAttribute('title', 'Demonstração — marca fictícia');
+    a.addEventListener('click', function (e) { e.preventDefault(); });
+  });
 </script>
 </body>
 </html>

@@ -51,6 +51,27 @@ for (const language of [
   }
 }
 
+// As chaves aplicadas via innerHTML (data-i18n-html) só podem carregar as tags
+// que o design usa: <em> e <br>. Qualquer outra coisa editada aqui viraria XSS
+// persistente no próximo deploy — e as demais chaves não podem ter HTML nenhum,
+// porque entram por textContent e apareceriam cruas na tela.
+const htmlKeys = new Set();
+for (const match of html.matchAll(/\bdata-i18n-html="([^"]+)"/g)) {
+  htmlKeys.add(match[1]);
+}
+for (const [name, dictionary] of [['pt', pt], ['en', en]]) {
+  for (const [key, value] of Object.entries(dictionary)) {
+    if (htmlKeys.has(key)) {
+      const stripped = value.replaceAll(/<\/?em>|<br>/g, '');
+      assert.ok(!/[<>]/.test(stripped),
+        `${name}.${key} contem HTML alem de <em>/<br>: ${value}`);
+    } else {
+      assert.ok(!/[<>]/.test(value),
+        `${name}.${key} tem HTML mas nao e chave data-i18n-html: ${value}`);
+    }
+  }
+}
+
 console.log(
   `i18n: ${usedKeys.size} chaves usadas no HTML, ${ptKeys.length} por idioma`
 );

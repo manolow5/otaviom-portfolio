@@ -12,7 +12,7 @@
   --panel: #101014;
   --ink: #efeeea;
   --muted: #a5a29a;
-  --faint: #6f6d66;
+  --faint: #7d7a72; /* mínimo AA sobre --page para texto pequeno */
   --border: rgba(255, 255, 255, .1);
   --border-soft: rgba(255, 255, 255, .06);
   --navbg: rgba(10, 10, 12, .72);
@@ -730,12 +730,9 @@ footer {
   footer { flex-direction: column; align-items: flex-start; gap: 8px; }
 }
 
-/* Em tela de toque não há hover: o vídeo sai e fica o poster, fraco o
-   suficiente para dar cor e textura sem disputar leitura com o nome da peça
-   (vários posters têm tipografia grande). */
 /* Em tela de toque não há hover, e o poster atrás do texto só atrapalha: vários
    deles têm tipografia enorme que disputa com o nome da peça. Fora ele, a cor
-   da peça entra pela marca lateral abaixo. */
+   da peça entra pela marca lateral do card. */
 @media (hover: none) {
   .work .work-vid { display: none; }
 }
