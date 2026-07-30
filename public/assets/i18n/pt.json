@@ -59,7 +59,7 @@
   "cases.now": "agora",
   "cases.ata.problem": "Reunião gravada não vira conhecimento: ninguém reassiste duas horas de vídeo para achar a decisão que foi tomada no minuto 74.",
   "cases.ata.built": "O backend de gravação: um robô entra na reunião pelo Zoom, Meet ou Teams, grava, transcreve e devolve resumo, plano de ação e mapa mental. Cada reunião ganha um chat próprio, e há um chat geral que responde cruzando todas elas, sempre citando a fonte.",
-  "cases.ata.stack": "Node · TypeScript · Postgres + pgvector · Firebase Auth · MeetingBaas",
+  "cases.ata.stack": "Node · TypeScript · Postgres + pgvector · Firebase Auth",
   "cases.ata.now": "Reescrita v2 em monorepo: Next 16, Expo, tokens de design próprios e i18n. Trabalho em andamento, não entregue.",
   "cases.dropi.tag": "interno · dashboard",
   "cases.dropi.problem": "Um scraper de frete coletava produtos o dia inteiro, mas conferir o que ele tinha trazido dependia de abrir o banco na mão.",

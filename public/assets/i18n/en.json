@@ -59,7 +59,7 @@
   "cases.now": "now",
   "cases.ata.problem": "A recorded meeting doesn't turn into knowledge: nobody rewatches two hours of video to find the decision made at minute 74.",
   "cases.ata.built": "The recording backend: a bot joins the meeting on Zoom, Meet or Teams, records it, transcribes it and returns a summary, an action plan and a mind map. Every meeting gets its own chat, and a general chat answers across all of them, always citing the source.",
-  "cases.ata.stack": "Node · TypeScript · Postgres + pgvector · Firebase Auth · MeetingBaas",
+  "cases.ata.stack": "Node · TypeScript · Postgres + pgvector · Firebase Auth",
   "cases.ata.now": "A v2 rewrite in a monorepo: Next 16, Expo, custom design tokens and i18n. Work in progress, not shipped.",
   "cases.dropi.tag": "internal · dashboard",
   "cases.dropi.problem": "A shipping scraper collected products all day, but checking what it had brought in meant opening the database by hand.",
