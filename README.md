@@ -105,6 +105,10 @@ PORTFOLIO_URL=http://localhost:8090/ python3 tests/browser_check.py
 São 56 verificações em 1440px e 390px. Ela desliga o cache do navegador antes de
 medir — sem isso o CSS recém-editado volta do cache e o teste passa mentindo.
 
+Se estiver rodando em WSL, o Chrome precisa ser o do Linux. O `chrome.exe` do
+Windows sobe e anuncia o CDP, mas escuta no `127.0.0.1` do lado do Windows, que o
+WSL não alcança: a porta 9222 responde vazio e parece que o navegador não subiu.
+
 ## Deploy
 
 O `wrangler` só empacota o `functions/` do diretório de onde é chamado:
