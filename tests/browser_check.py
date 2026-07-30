@@ -233,16 +233,24 @@ def verificar_preview(c):
            c.eval_js("document.querySelectorAll('.work')[1].querySelector('video').paused") is True,
            "pausado")
 
-    # A giro não tem screencast: só poster, e sem erro.
-    giro = json.loads(c.eval_js("""(() => {
-      const item = [...document.querySelectorAll('.work')].find(w => w.getAttribute('href').includes('giro'));
-      return JSON.stringify({
-        prev: item.dataset.prev || null,
-        poster: (item.querySelector('.work-vid').style.backgroundImage || '').includes('poster-giro')
-      });
+    # Todo card do mostruário aponta para o preview e o poster da sua própria LP.
+    # A giro entrou por último e o buraco foi exatamente este: o prev-giro.mp4
+    # existia no disco e o data-prev não, então o card nunca pedia o vídeo — e o
+    # build não tem como perceber, porque para ele o arquivo está lá.
+    cards = json.loads(c.eval_js("""(() => {
+      const itens = [...document.querySelectorAll('.work')];
+      const falhas = itens.map(w => {
+        const lp = w.getAttribute('href').replace(/.*lps\\/|\\/$/g, '');
+        const prev = w.dataset.prev || '';
+        const poster = w.querySelector('.work-vid').style.backgroundImage || '';
+        const ok = prev === `assets/video/prev-${lp}.mp4` && poster.includes(`poster-${lp}`);
+        return ok ? null : `${lp}(prev=${prev || 'nenhum'})`;
+      }).filter(Boolean);
+      return JSON.stringify({total: itens.length, falhas});
     })()"""))
-    checar("giro sem preview, com poster", giro["prev"] is None and giro["poster"],
-           f"prev={giro['prev']} poster={giro['poster']}")
+    checar("todo card tem o preview e o poster da sua LP",
+           cards["total"] == 7 and not cards["falhas"],
+           f"{cards['total']} cards, falhas: {cards['falhas'] or 'nenhuma'}")
 
 
 def main():
