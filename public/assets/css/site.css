@@ -478,14 +478,6 @@ nav {
 }
 .work:hover .work-go { border-color: var(--hue); color: var(--hue); }
 
-.works-note {
-  margin-top: 34px;
-  font-size: 12px;
-  line-height: 1.9;
-  color: var(--faint);
-  max-width: 68ch;
-}
-
 /* ===== Produto em operação (Ata Recorder) =====
    Faixa própria, em band-alt, porque é o único produto do portfólio com
    domínio próprio no ar. O print é claro e a página é escura: a moldura com

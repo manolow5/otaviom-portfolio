@@ -28,7 +28,9 @@ fi
 FORCE=0
 [[ "${1:-}" == "--force" ]] && FORCE=1
 
-LPS=(ata avesso bamboo brasa halo memo orbita giro)
+# A giro existiu aqui e foi retirada do portfólio em 2026-07-30, por decisão do
+# dono sobre a qualidade da peça. A pasta dela continua no repositório lps.
+LPS=(ata avesso bamboo brasa halo memo orbita)
 HERO_FONTE="$LPS_DIR/memo/media/corredor-scrub.mp4"
 HERO_DUR=4
 
@@ -41,12 +43,9 @@ for bin in ffmpeg ffprobe; do
   command -v "$bin" >/dev/null || { echo "ERRO: $bin não está no PATH."; exit 1; }
 done
 
-# Caminho do vídeo de scrub de uma LP (a giro fugiu do padrão de nome).
+# Caminho do vídeo de scrub de uma LP.
 scrub_de() {
-  case "$1" in
-    giro) echo "$LPS_DIR/giro/media/giro-scrub.mp4" ;;
-    *)    echo "$LPS_DIR/$1/media/corredor-scrub.mp4" ;;
-  esac
+  echo "$LPS_DIR/$1/media/corredor-scrub.mp4"
 }
 
 # Verdadeiro quando a saída falta ou é mais velha que a fonte (ou com --force).

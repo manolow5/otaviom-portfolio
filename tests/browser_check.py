@@ -234,9 +234,9 @@ def verificar_preview(c):
            "pausado")
 
     # Todo card do mostruário aponta para o preview e o poster da sua própria LP.
-    # A giro entrou por último e o buraco foi exatamente este: o prev-giro.mp4
-    # existia no disco e o data-prev não, então o card nunca pedia o vídeo — e o
-    # build não tem como perceber, porque para ele o arquivo está lá.
+    # O buraco que esta checagem existe para pegar: um prev-<lp>.mp4 no disco sem
+    # o data-prev correspondente no card, que faz o hover nunca pedir o vídeo — e
+    # o build não tem como perceber, porque para ele o arquivo está lá.
     cards = json.loads(c.eval_js("""(() => {
       const itens = [...document.querySelectorAll('.work')];
       const falhas = itens.map(w => {
@@ -249,7 +249,7 @@ def verificar_preview(c):
       return JSON.stringify({total: itens.length, falhas});
     })()"""))
     checar("todo card tem o preview e o poster da sua LP",
-           cards["total"] == 7 and not cards["falhas"],
+           cards["total"] == 6 and not cards["falhas"],
            f"{cards['total']} cards, falhas: {cards['falhas'] or 'nenhuma'}")
 
 

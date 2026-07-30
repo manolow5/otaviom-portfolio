@@ -1,7 +1,7 @@
 # otaviom — portfólio
 
 Site de uma página, estático, sem framework e sem build de JavaScript. Serve, no
-mesmo domínio, as oito landing pages narrativas que ele apresenta: clicar em uma
+mesmo domínio, as sete landing pages narrativas que ele apresenta: clicar em uma
 peça do mostruário abre a peça de verdade, não um print dela.
 
 Publicado no Cloudflare Pages.
@@ -51,7 +51,7 @@ public/
 functions/
   lps/[lp]/media/[[path]].js  # HTTP Range para os vídeos das LPs
   assets/video/[[path]].js    # HTTP Range para o vídeo do hero
-lps/<lp>/                     # as oito LPs (fonte)
+lps/<lp>/                     # as sete LPs (fonte)
 build.sh
 tests/
 serve.py                      # servidor local com suporte a Range
@@ -75,10 +75,7 @@ curl -I -H "Range: bytes=0-1" http://localhost:8090/assets/video/hero-scrub.mp4
 
 Os vídeos das LPs somam 42 MB e **não são versionados** — num clone limpo o
 `build.sh` avisa e para. Eles são gerados localmente (ComfyUI + Wan 2.2, 15s em
-720p por peça) e re-encodados com o comando de keyframes do padrão. Os 161
-quadros `.webp` da `giro` estão aqui porque ela é a exceção: o giro de 360° é
-desenhado num `canvas` a partir de imagens, não de vídeo, e foi assim que a lupa
-ficou nítida em qualquer ponto da volta.
+720p por peça) e re-encodados com o comando de keyframes do padrão.
 
 O build também gera, para cada LP com screencast, um preview de ~6s em 720×450 e
 um poster do primeiro quadro. O preview só é baixado no `mouseenter`, e em tela
@@ -125,12 +122,12 @@ for lp in ata avesso bamboo brasa halo memo orbita; do
   curl -o /dev/null -s -w "$lp %{http_code}\n" \
     -H "Range: bytes=0-1" https://<domínio>/lps/$lp/media/corredor-scrub.mp4
 done
-# a giro usa giro-scrub.mp4; e se o edge tiver cacheado um 200 antigo, versione a URL
+# se o edge tiver cacheado um 200 antigo, versione a URL do vídeo (?v=2)
 ```
 
 ## Sobre as peças
 
-As sete LPs do mostruário são estudos de estilo para marcas fictícias: cada uma
+As seis LPs do mostruário são estudos de estilo para marcas fictícias: cada uma
 testa a mesma gramática narrativa num nicho diferente. A oitava, `ata`, é a
 landing page de um produto real e por isso fica fora do mostruário — ela aparece
 dentro do caso técnico do produto.
